@@ -70,8 +70,8 @@ body {
 }
 
 #code {
-  min-width: 500px;
-  min-height: 550px;
+  min-width: 300px;
+  min-height: 500px;
   background-color: rgb(55, 55, 55);
   color: white;
   font-size: 16px;
@@ -91,9 +91,9 @@ body {
   background-color: var(--primary-button-color);
   color: var(--text-color);
   font-family: var(--text-font);
-  font-size: 30px;
-  width: 300px;
-  height: 120px;
+  font-size: 20px;
+  width: 120px;
+  height: 60px;
   border: none;
   border-radius: 5%;
 }
@@ -114,6 +114,7 @@ body {
 #output {
   font-family: var(--text-font);
   color: var(--text-color);
+  white-space: pre;
 }
 
 #current-state {

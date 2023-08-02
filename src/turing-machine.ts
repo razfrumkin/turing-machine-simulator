@@ -28,7 +28,7 @@ export class TuringMachine {
 
     constructor(automata: TMA, tape: string) {
         this.automata$ = automata
-        this.tape$ = new Tape(tape)
+        this.tape$ = new Tape(this, tape)
         this.currentStateId$ = automata.initialStateId
         
         this.isRunning$ = false
@@ -39,7 +39,6 @@ export class TuringMachine {
         for (const caseCharacter in state) {
             if (this.tape$.current == caseCharacter) {
                 const turingCase = state[caseCharacter]
-
                 await this.tape$.executeCase(turingCase, onReplaced, onMoved)
 
                 this.currentStateId$ = turingCase.targetStateId
@@ -72,10 +71,12 @@ export class TuringMachine {
 }
 
 export class Tape {
+    private machine: TuringMachine
     private cells$: string
     private pointer$: number
 
-    constructor(word: string) {
+    constructor(machine: TuringMachine, word: string) {
+        this.machine = machine
         this.cells$ = word + ' '
         this.pointer$ = 0
     }
@@ -106,6 +107,10 @@ export class Tape {
 
         turingCase.direction == TMADirection.Left ? this.moveLeft() : this.moveRight()
         await onMoved(this, turingCase.direction)
+    }
+
+    get isMachineRunning(): boolean {
+        return this.machine.isRunning
     }
 
     get cells(): string {

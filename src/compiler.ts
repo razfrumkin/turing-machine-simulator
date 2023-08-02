@@ -98,7 +98,7 @@ export class Lexer {
         this.advance()
 
         if (this.position >= this.code.length) return { type: TokenType.ExpectedMatchingApostrophe, value: '', position: this.position }
-        if (this.current != '\'') return { type: TokenType.ExpectedMatchingApostrophe, value: '', position: this.position }
+        if (this.current !== '\'') return { type: TokenType.ExpectedMatchingApostrophe, value: '', position: this.position }
 
         this.advance()
 
@@ -112,7 +112,7 @@ export class Lexer {
 
         let value = ''
         while (this.position < this.code.length) {
-            if (this.current == '"') {
+            if (this.current === '"') {
                 this.advance()
                 return { type: TokenType.String, value: value, position: start }
             }
@@ -128,7 +128,7 @@ export class Lexer {
         const start = this.position
 
         let value = ''
-        while (this.position < this.code.length && (this.current == '_' || isAlphabeticInteger(this.current))) {
+        while (this.position < this.code.length && (this.current === '_' || isAlphabeticInteger(this.current))) {
             value += this.current
             this.advance()
         }
@@ -161,7 +161,7 @@ export class Lexer {
     private makeArrow(): Token {
         this.advance()
 
-        if (this.current == '>') {
+        if (this.current === '>') {
             this.advance()
             return { type: TokenType.Arrow, value: '', position: this.position - 1 }
         }
@@ -174,13 +174,13 @@ export class Lexer {
 
         while (this.position < this.code.length) {
             if (this.isSpace(this.current)) this.advance()
-            else if (this.current == '\'') tokens.push(this.makeCharacter())
-            else if (this.current == '"') tokens.push(this.makeString())
-            else if (this.current == '_' || isAlphabetic(this.current)) tokens.push(this.makeIdentifier())
-            else if (this.current == '{') tokens.push(this.makeLeftCurlyBrace())
-            else if (this.current == '}') tokens.push(this.makeRightCurlyBrace())
-            else if (this.current == ',') tokens.push(this.makeComma())
-            else if (this.current == '-') tokens.push(this.makeArrow())
+            else if (this.current === '\'') tokens.push(this.makeCharacter())
+            else if (this.current === '"') tokens.push(this.makeString())
+            else if (this.current === '_' || isAlphabetic(this.current)) tokens.push(this.makeIdentifier())
+            else if (this.current === '{') tokens.push(this.makeLeftCurlyBrace())
+            else if (this.current === '}') tokens.push(this.makeRightCurlyBrace())
+            else if (this.current === ',') tokens.push(this.makeComma())
+            else if (this.current === '-') tokens.push(this.makeArrow())
             else {
                 tokens.push({ type: TokenType.IllegalChracter, value: '', position: this.position })
                 this.advance()
@@ -209,36 +209,36 @@ export class Parser {
 
     private advance() {
         this.index += 1
-        if (this.current.type != TokenType.EndOfFile) this.current = this.tokens[this.index]
+        if (this.current.type !== TokenType.EndOfFile) this.current = this.tokens[this.index]
     }
 
     private parseCase(stateId: string, state: TMAState): Result {
-        if (this.current.type != TokenType.Character) return Result.ExpectedCaseCharacter
+        if (this.current.type !== TokenType.Character) return Result.ExpectedCaseCharacter
         const characterCase = this.current.value
         if (characterCase in state) return Result.CharacterCaseAlreadyExistsWithinState
         this.advance()
 
-        if (this.current.type as TokenType != TokenType.Comma) return Result.ExpectedCommaBetweenCaseCharacterAndReplacementCharacter
+        if (this.current.type as TokenType !== TokenType.Comma) return Result.ExpectedCommaBetweenCaseCharacterAndReplacementCharacter
         this.advance()
 
-        if (this.current.type != TokenType.Character) return Result.ExpectedReplacementCharacter
+        if (this.current.type !== TokenType.Character) return Result.ExpectedReplacementCharacter
         const replacement = this.current.value
         this.advance()
 
-        if (this.current.type as TokenType != TokenType.Comma) return Result.ExpectedCommaBetweenReplacementCharacterAndTapeDirection
+        if (this.current.type as TokenType !== TokenType.Comma) return Result.ExpectedCommaBetweenReplacementCharacterAndTapeDirection
         this.advance()
 
         const direction =
-            this.current.type as TokenType == TokenType.Left ? TMADirection.Left :
-            this.current.type as TokenType == TokenType.Right ? TMADirection.Right :
+            this.current.type as TokenType === TokenType.Left ? TMADirection.Left :
+            this.current.type as TokenType === TokenType.Right ? TMADirection.Right :
             TMADirection.Error
-        if (direction == TMADirection.Error) return Result.ExpectedDirection
+        if (direction === TMADirection.Error) return Result.ExpectedDirection
         this.advance()
 
-        if (this.current.type as TokenType != TokenType.Arrow) return Result.ExpectedArrowBetweenDirectionAndTargetState
+        if (this.current.type as TokenType !== TokenType.Arrow) return Result.ExpectedArrowBetweenDirectionAndTargetState
         this.advance()
 
-        if (this.current.type as TokenType == TokenType.Self) {
+        if (this.current.type as TokenType === TokenType.Self) {
             const targetStateId = stateId
             this.advance()
 
@@ -247,7 +247,7 @@ export class Parser {
             return Result.Success
         }
 
-        if (this.current.type as TokenType != TokenType.String) return Result.ExpectedTargetState
+        if (this.current.type as TokenType !== TokenType.String) return Result.ExpectedTargetState
         const targetStateId = this.current.value
         if (targetStateId.length === 0) return Result.StateIdMustNotBeEmpty
 
@@ -263,25 +263,25 @@ export class Parser {
 
         let isInitialState = false
 
-        if (this.current.type == TokenType.Initial) {
-            if (automata.initialStateId != '') return Result.InitialStateAlreadyExists
+        if (this.current.type === TokenType.Initial) {
+            if (automata.initialStateId !== '') return Result.InitialStateAlreadyExists
             isInitialState = true
             this.advance()
         }
 
-        if (this.current.type != TokenType.State) return Result.ExpectedKeywordState
+        if (this.current.type !== TokenType.State) return Result.ExpectedKeywordState
         this.advance()
 
-        if (this.current.type as TokenType != TokenType.String) return Result.ExpectedStateId
+        if (this.current.type as TokenType !== TokenType.String) return Result.ExpectedStateId
         const stateId = this.current.value
         if (stateId.length === 0) return Result.StateIdMustNotBeEmpty
         if (stateId in automata.states) return Result.StateIdAlreadyExists
         this.advance()
 
-        if (this.current.type as TokenType != TokenType.LeftCurlyBrace) return Result.ExpectedLeftCurlyBracket
+        if (this.current.type as TokenType !== TokenType.LeftCurlyBrace) return Result.ExpectedLeftCurlyBracket
         this.advance()
 
-        while (this.current.type as TokenType != TokenType.RightCurlyBrace) {
+        while (this.current.type as TokenType !== TokenType.RightCurlyBrace) {
             const result = this.parseCase(stateId, state)
             if (result != Result.Success) return result
         }
@@ -297,14 +297,14 @@ export class Parser {
     parse(): [TMA, Result] {
         let automata: TMA = { initialStateId: '', states: {} }
 
-        if (this.tokens.length == 0) return [automata, Result.LexicalAnalysisError]
+        if (this.tokens.length === 0) return [automata, Result.LexicalAnalysisError]
 
-        while (this.current.type != TokenType.EndOfFile) {
+        while (this.current.type !== TokenType.EndOfFile) {
             const result = this.parseState(automata)
-            if (result != Result.Success) return [automata, result] // solve error later
+            if (result !== Result.Success) return [automata, result] // solve error later
         }
 
-        if (automata.initialStateId == '') return [automata, Result.NoInitialStateExists] // solve error later
+        if (automata.initialStateId === '') return [automata, Result.NoInitialStateExists] // solve error later
 
         for (const stateId in automata.states) {
             const state = automata.states[stateId]

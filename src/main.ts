@@ -1,11 +1,11 @@
-import { Lexer, Parser, Result } from './compiler'
+import { Lexer, Parser, Result, Token } from './compiler'
 import { TMA, TuringMachine, Tape, TMADirection } from './turing-machine'
 
 const code = document.getElementById('code') as HTMLTextAreaElement
 const compileButton = document.getElementById('compile-button') as HTMLButtonElement
 const runButton = document.getElementById('run-button') as HTMLButtonElement
 const resetButton = document.getElementById('reset-button') as HTMLButtonElement
-const output = document.getElementById('output') as HTMLSpanElement
+const output = document.getElementById('output') as HTMLParagraphElement
 const tapeInput = document.getElementById('tape-input') as HTMLInputElement
 const currentState = document.getElementById('current-state') as HTMLSpanElement
 
@@ -18,14 +18,60 @@ prepareTapeElement('')
 let machine: TuringMachine
 let automata: TMA
 
+class EditorMap {
+  private lines$: number[]
+
+  constructor(code: string) {
+    this.lines$ = [0]
+
+    this.generate(code)
+  }
+
+  private generate(code: string) {
+    for (let index = 0; index < code.length; index += 1) {
+      this.lines$[this.lines$.length - 1] += 1
+
+      if ('\r\n'.includes(code[index])) this.lines$.push(0)
+    }
+  }
+
+  toRowAndColumn(characterIndex: number): [number, number] {
+    let currentLine = 0
+    let currentColumn = 0
+
+    for (let index = 0; index < characterIndex; index += 1) {
+      if (currentColumn < this.lines$[currentLine]) currentColumn += 1
+      else {
+        currentColumn = 0
+        currentLine += 1
+      }
+    }
+
+    return [currentLine + 1, currentColumn + 1]
+  }
+}
+
+function formatLexicalError(token: Token, map: EditorMap): string {
+  const [row, column] = map.toRowAndColumn(token.position)
+  return `Line ${row}, at column ${column}: ${token.type.toString().substring(1)}`
+}
+
 compileButton.addEventListener('click', () => {
+  const map = new EditorMap(code.value)
   const lexer = new Lexer(code.value)
   const tokens = lexer.tokens()
   const errors = tokens.filter(token => lexer.isError(token.type))
 
   if (errors.length > 0) {
     output.className = 'output-failure'
-    output.textContent = 'Lexical error...'
+
+    let outputString = formatLexicalError(errors[0], map)
+    for (let index = 1; index < errors.length; index += 1) {
+      outputString += `\r\n${formatLexicalError(errors[index], map)}`
+    }
+
+    output.textContent = outputString
+
     runButton.disabled = true
     return;
   }
@@ -41,7 +87,7 @@ compileButton.addEventListener('click', () => {
   }
 
   output.className = 'output-success'
-  output.textContent = ''
+  output.textContent = 'Compiled successfully'
   if (!machine?.isRunning) runButton.disabled = false
 
   automata = automataObject
@@ -126,6 +172,8 @@ async function onMachineReplaced(tape: Tape) {
   const cell = tapeCellsElement.children[tape.pointer]
 
   await timeout(DURATION_MILLISECONDS)
+  if (!tape.isMachineRunning) return
+
   cell.textContent = tape.current
 }
 
@@ -142,6 +190,8 @@ async function onMachineMoved(tape: Tape, direction: TMADirection) {
   }
 
   await timeout(DURATION_MILLISECONDS)
+  if (!tape.isMachineRunning) return
+
   movePointerToCell(tape.pointer)
 }
 
