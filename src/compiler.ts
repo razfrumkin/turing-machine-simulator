@@ -53,10 +53,15 @@ export enum TokenType {
     IllegalChracter = '!Illegal character'
 }
 
+export function isError(type: TokenType): boolean {
+    return type.toString()[0] === '!'
+}
+
 export type Token = {
     type: TokenType
     value: string
     position: number
+    length: number
 }
 
 export function isAlphabetic(character: string): boolean {
@@ -92,17 +97,17 @@ export class Lexer {
     private makeCharacter(): Token {
         this.advance()
 
-        if (this.position >= this.code.length) return { type: TokenType.ExpectedCharacterExpression, value: '', position: this.position }
+        if (this.position >= this.code.length) return { type: TokenType.ExpectedCharacterExpression, value: '', position: this.position, length: 0 }
         const character = this.current
 
         this.advance()
 
-        if (this.position >= this.code.length) return { type: TokenType.ExpectedMatchingApostrophe, value: '', position: this.position }
-        if (this.current !== '\'') return { type: TokenType.ExpectedMatchingApostrophe, value: '', position: this.position }
+        if (this.position >= this.code.length) return { type: TokenType.ExpectedMatchingApostrophe, value: '', position: this.position, length: 0 }
+        if (this.current !== '\'') return { type: TokenType.ExpectedMatchingApostrophe, value: '', position: this.position, length: 0 }
 
         this.advance()
 
-        return { type: TokenType.Character, value: character, position: this.position - 1 }
+        return { type: TokenType.Character, value: character, position: this.position - 2, length: 1 }
     }
 
     private makeString(): Token {
@@ -114,14 +119,14 @@ export class Lexer {
         while (this.position < this.code.length) {
             if (this.current === '"') {
                 this.advance()
-                return { type: TokenType.String, value: value, position: start }
+                return { type: TokenType.String, value: value, position: start, length: value.length }
             }
 
             value += this.current
             this.advance()
         }
 
-        return { type: TokenType.ExpectedMatchingQuotation, value: '', position: this.position }
+        return { type: TokenType.ExpectedMatchingQuotation, value: '', position: this.position, length: 1 }
     }
 
     private makeIdentifier(): Token {
@@ -134,28 +139,28 @@ export class Lexer {
         }
         
         switch (value) {
-            case 'initial': return { type: TokenType.Initial, value: '', position: start }
-            case 'state': return { type: TokenType.State, value: '', position: start }
-            case 'L': return { type: TokenType.Left, value: '', position: start }
-            case 'R': return { type: TokenType.Right, value: '', position: start }
-            case 'self': return { type: TokenType.Self, value: '', position: start }
-            default: return { type: TokenType.Identifier, value: value, position: start }
+            case 'initial': return { type: TokenType.Initial, value: '', position: start, length: value.length }
+            case 'state': return { type: TokenType.State, value: '', position: start, length: value.length }
+            case 'L': return { type: TokenType.Left, value: '', position: start, length: value.length }
+            case 'R': return { type: TokenType.Right, value: '', position: start, length: value.length }
+            case 'self': return { type: TokenType.Self, value: '', position: start, length: value.length }
+            default: return { type: TokenType.Identifier, value: value, position: start, length: value.length }
         }
     }
 
     private makeLeftCurlyBrace(): Token {
         this.advance()
-        return { type: TokenType.LeftCurlyBrace, value: '', position: this.position - 1 }
+        return { type: TokenType.LeftCurlyBrace, value: '', position: this.position - 1, length: 1 }
     }
 
     private makeRightCurlyBrace(): Token {
         this.advance()
-        return { type: TokenType.RightCurlyBrace, value: '', position: this.position - 1 }
+        return { type: TokenType.RightCurlyBrace, value: '', position: this.position - 1, length: 1 }
     }
 
     private makeComma(): Token {
         this.advance()
-        return { type: TokenType.Comma, value: '', position: this.position - 1 }
+        return { type: TokenType.Comma, value: '', position: this.position - 1, length: 1 }
     }
 
     private makeArrow(): Token {
@@ -163,10 +168,10 @@ export class Lexer {
 
         if (this.current === '>') {
             this.advance()
-            return { type: TokenType.Arrow, value: '', position: this.position - 1 }
+            return { type: TokenType.Arrow, value: '', position: this.position - 2, length: 2 }
         }
 
-        return { type: TokenType.ExpectedGreaterThanSymbol, value: '', position: this.position }
+        return { type: TokenType.ExpectedGreaterThanSymbol, value: '', position: this.position, length: 0 }
     }
 
     tokens(): Token[] {
@@ -182,17 +187,13 @@ export class Lexer {
             else if (this.current === ',') tokens.push(this.makeComma())
             else if (this.current === '-') tokens.push(this.makeArrow())
             else {
-                tokens.push({ type: TokenType.IllegalChracter, value: '', position: this.position })
+                tokens.push({ type: TokenType.IllegalChracter, value: '', position: this.position, length: 0 })
                 this.advance()
             }
         }
 
-        tokens.push({ type: TokenType.EndOfFile, value: '', position: this.position })
+        tokens.push({ type: TokenType.EndOfFile, value: '', position: this.position, length: 0 })
         return tokens
-    }
-
-    isError(type: TokenType): boolean {
-        return type.toString()[0] == '!'
     }
 }
 

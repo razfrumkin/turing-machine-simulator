@@ -1,7 +1,7 @@
 :root {
     --text-editor-background-color: #1e1e1e;
     --text-editor-foreground-color: #d4d4d4;
-    --text-editor-line-numbers-color: #6B6B6B
+    --text-editor-line-numbers-color: #6B6B6B;
 }
 
 .editor {
@@ -18,7 +18,7 @@
 #line-numbers {
     padding: 10px;
     background-color: var(--text-editor-background-color);
-    color: var(--text-editor-foreground-color);
+    color: var(--text-editor-line-numbers-color);
     text-align: right;
     user-select: none;
     flex: 0 0 auto;
@@ -78,4 +78,24 @@
     left: 0;
     top: 0;
     pointer-events: none;
+}
+
+span.keyword {
+    color: #c0caf5;
+}
+
+span.string {
+    color: #e99a9a;
+}
+
+span.character {
+    color: #85d0bb;
+}
+
+span.arrow {
+    color: #239383
+}
+
+span.default {
+    color: var(--text-editor-foreground-color);
 }

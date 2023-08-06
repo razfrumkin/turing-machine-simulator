@@ -1,4 +1,4 @@
-import { Lexer, Parser, Result, Token } from './compiler'
+import { Lexer, Parser, Result, Token, isError } from './compiler'
 import { TMA, TuringMachine, Tape, TMADirection } from './turing-machine'
 
 const code = document.getElementById('code') as HTMLTextAreaElement
@@ -60,7 +60,7 @@ compileButton.addEventListener('click', () => {
   const map = new EditorMap(code.value)
   const lexer = new Lexer(code.value)
   const tokens = lexer.tokens()
-  const errors = tokens.filter(token => lexer.isError(token.type))
+  const errors = tokens.filter(token => isError(token.type))
 
   if (errors.length > 0) {
     output.className = 'output-failure'
