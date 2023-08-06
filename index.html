@@ -5,12 +5,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Turing Machine</title>
+  <link rel="stylesheet" href="src/styles/editor.css">
   <link rel="stylesheet" href="src/styles/style.css">
   <script type="module" src="src/main.ts"></script>
 </head>
 <body>
   <div class="container">
-    <div class="content">
+    <section class="editor">
+      <div id="line-numbers"></div>
+      <div id="code-container">
+        <textarea id="code" contenteditable="true" spellcheck="false" aria-autocomplete="none"></textarea>
+        <div id="layer"></div>
+      </div>
+    </section>
+      <!--
       <div class="upper">
         <div class="heading-container">
           <div class="heading">
@@ -21,8 +29,11 @@
             <span id="current-state"></span>
           </div>
         </div>
+      </div>
+      -->
+
+        <!--
         <div class="editor-container">
-          <textarea id="code" placeholder="Enter code here..." contenteditable></textarea>
           <section class="options">
             <button id="compile-button" class="primary-button">Compile</button>
             <button id="run-button" class="primary-button" disabled>Run</button>
@@ -30,7 +41,9 @@
           </section>
           <p id="output" class="output-success"></p>
         </div>
-      </div>
+        -->
+
+      <!--
       <div class="lower">
         <input id="tape-input" class="text-field" type="text" placeholder="Tape input here...">
         <div id="tape-container" class="tape">
@@ -40,7 +53,7 @@
           <div id="tape-pointer" class="pointer"></div>
         </div>
       </div>
-    </div>
+      -->
   </div>
 </body>
 </html>
