@@ -1,14 +1,39 @@
 import { isError, Lexer, Token, TokenType } from './compiler'
+import { clearOutput, logOutput } from './console'
 
 const lineNumbers = document.getElementById('line-numbers') as HTMLDivElement
 const code = document.getElementById('code') as HTMLTextAreaElement
 const layer = document.getElementById('layer') as HTMLDivElement
 
-// remove this later and add this to main.ts
-window.addEventListener('load', () => {
-    syncScroll()
-    updateEditor()
+const MINIMUM_FONT_SIZE: number = 12
+const MAXIMUM_FONT_SIZE: number = 36
+const DEFAULT_FONT_SIZE: number = 24
+let fontSize: number = DEFAULT_FONT_SIZE
+updateEditorFontSize()
+syncScroll()
+updateEditor()
+
+const zoomInButton = document.getElementById('zoom-in-button') as HTMLButtonElement
+const zoomOutButton = document.getElementById('zoom-out-button') as HTMLButtonElement
+
+zoomInButton.addEventListener('click', () => {
+    if (fontSize >= MAXIMUM_FONT_SIZE) return
+    fontSize += 1
+    updateEditorFontSize()
 })
+
+zoomOutButton.addEventListener('click', () => {
+    if (fontSize <= MINIMUM_FONT_SIZE) return
+    fontSize -= 1
+    updateEditorFontSize()
+})
+
+function updateEditorFontSize() {
+    const size = `${fontSize.toString()}px`
+    code.style.fontSize = size
+    layer.style.fontSize = size
+    lineNumbers.style.fontSize = size
+}
 
 code.addEventListener('input', () => {
     updateEditor()

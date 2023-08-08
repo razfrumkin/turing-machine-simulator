@@ -1,0 +1,50 @@
+:root {
+    --cell-length: 100px;
+}
+
+.machine {
+    display: flex;
+    flex: 1;
+    box-sizing: border-box;
+    flex-direction: column;
+    background-color: var(--text-editor-background-color)
+}
+
+.tape {
+  overflow-x: scroll;
+  display: block;
+}
+
+.cells {
+  display: flex;
+  flex-direction: row;
+  border-radius: 10px;
+  border: none;
+  display: inline-flex;
+  border: solid var(--text-color) 3px;
+  height: var(--cell-length);
+}
+
+.cell {
+  font-family: var(--text-font);
+  color: var(--text-color);
+  font-size: 30px;
+  width: var(--cell-length);
+  height: var(--cell-length);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: solid var(--text-color) 3px
+}
+
+.cell:last-child {
+  border-right: none; /* Remove border on the last item */
+}
+
+.pointer {
+  width: 0;
+  height: 0;
+  border-left: calc(var(--cell-length) / 5) solid transparent;
+  border-right: calc(var(--cell-length) / 5) solid transparent;
+  border-bottom: calc(var(--cell-length) / 2) solid white;
+}

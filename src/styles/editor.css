@@ -1,18 +1,17 @@
 :root {
-    --text-editor-background-color: #1e1e1e;
-    --text-editor-foreground-color: #d4d4d4;
-    --text-editor-line-numbers-color: #6B6B6B;
+    --text-editor-background-color: rgb(31, 31, 31);
+    --text-editor-foreground-color: rgb(255, 255, 255);
+    --text-editor-line-numbers-color: rgb(102, 102, 102);
 }
 
 .editor {
     position: relative;
     display: flex;
-    width: 40%;
+    flex: 1;
     font-family: 'Menlo', monospace;
-    font-size: 24px;
     line-height: 1.5;
-    resize: horizontal;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 #line-numbers {
@@ -44,7 +43,6 @@
     height: 100%;
     padding: 10px;
     font-family: inherit;
-    font-size: inherit;
     line-height: inherit;
     resize: none;
     box-sizing: border-box;
@@ -52,7 +50,7 @@
     outline: none;
     border: none;
     background-color: var(--text-editor-background-color);
-    color: blue;
+    color: transparent;
     caret-color: var(--text-editor-foreground-color);
     white-space: pre;
 }
@@ -62,7 +60,6 @@
     height: 100%;
     padding: 10px;
     font-family: inherit;
-    font-size: 24px;
     line-height: 1.5;
     resize: none;
     box-sizing: border-box;
@@ -81,19 +78,19 @@
 }
 
 span.keyword {
-    color: #c0caf5;
+    color: rgb(238, 39, 111);
 }
 
 span.string {
-    color: #e99a9a;
+    color: rgb(166, 226, 46);
 }
 
 span.character {
-    color: #85d0bb;
+    color: rgb(174, 129, 255);
 }
 
 span.arrow {
-    color: #239383
+    color: rgb(102, 217, 239);
 }
 
 span.default {

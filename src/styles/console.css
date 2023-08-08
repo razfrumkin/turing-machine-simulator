@@ -1,0 +1,64 @@
+:root {
+    --console-background-color: var(--text-editor-background-color);
+    --console-foreground-color: rgb(221, 221, 221);
+    --console-success: rgb(134, 180, 43);
+    --console-warning: rgb(176, 177, 42);
+    --console-error: rgb(208, 71, 112);
+}
+
+.controls {
+    display: flex;
+    flex: 1;
+    box-sizing: border-box;
+    flex-direction: column;
+    background: var(--console-background-color);
+    overflow: hidden;
+}
+
+.output {
+    display: flex;
+    background-color: transparent;
+    padding: 10px;
+    overflow-y: auto;
+    flex: 1;
+    box-sizing: border-box;
+    white-space: pre;
+}
+
+#console {
+    margin: 0;
+    flex: 1;
+    font-family: 'Menlo';
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--console-foreground-color);
+}
+
+span.success {
+    color: var(--console-success);
+}
+
+span.warning {
+    color: var(--console-warning);
+}
+
+span.error {
+    color: var(--console-error);
+}
+
+.options {
+    display: flex;
+    padding: 10px;
+    gap: 20px;
+}
+
+.text-field {
+    border: none;
+    outline: none;
+    background-color: rgb(54, 54, 54);
+    color: white;
+    width: 300px;
+    height: 50px;
+    padding-left: 10px;
+    font-size: 24px;
+}

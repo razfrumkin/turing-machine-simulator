@@ -1,11 +1,9 @@
 import { Lexer, Parser, Result, Token, isError } from './compiler'
+import { clearOutput, logOutput } from './console'
 import { TMA, TuringMachine, Tape, TMADirection } from './turing-machine'
 
 const code = document.getElementById('code') as HTMLTextAreaElement
-const compileButton = document.getElementById('compile-button') as HTMLButtonElement
-const runButton = document.getElementById('run-button') as HTMLButtonElement
-const resetButton = document.getElementById('reset-button') as HTMLButtonElement
-const output = document.getElementById('output') as HTMLParagraphElement
+const runOrStopButton = document.getElementById('run-or-stop-button') as HTMLButtonElement
 const tapeInput = document.getElementById('tape-input') as HTMLInputElement
 const currentState = document.getElementById('current-state') as HTMLSpanElement
 
@@ -15,7 +13,7 @@ const tapePointerElement = document.getElementById('tape-pointer') as HTMLDivEle
 
 prepareTapeElement('')
 
-let machine: TuringMachine
+let machine: TuringMachine | null
 let automata: TMA
 
 class EditorMap {
@@ -40,7 +38,7 @@ class EditorMap {
     let currentColumn = 0
 
     for (let index = 0; index < characterIndex; index += 1) {
-      if (currentColumn < this.lines$[currentLine]) currentColumn += 1
+      if (currentColumn < this.lines$[currentLine] - 1) currentColumn += 1
       else {
         currentColumn = 0
         currentLine += 1
@@ -56,45 +54,66 @@ function formatLexicalError(token: Token, map: EditorMap): string {
   return `Line ${row}, at column ${column}: ${token.type.toString().substring(1)}`
 }
 
-compileButton.addEventListener('click', () => {
+function compile(): boolean {
   const map = new EditorMap(code.value)
   const lexer = new Lexer(code.value)
   const tokens = lexer.tokens()
   const errors = tokens.filter(token => isError(token.type))
 
+  clearOutput()
+
+  const span = document.createElement('span')
+
   if (errors.length > 0) {
-    output.className = 'output-failure'
+    span.classList.add('error')
 
     let outputString = formatLexicalError(errors[0], map)
     for (let index = 1; index < errors.length; index += 1) {
       outputString += `\r\n${formatLexicalError(errors[index], map)}`
     }
 
-    output.textContent = outputString
+    span.textContent = outputString
 
-    runButton.disabled = true
-    return;
+    logOutput(span)
+
+    return false
   }
 
   const parser = new Parser(tokens)
   const [automataObject, result] = parser.parse();
 
   if (result != Result.Success) {
-    output.className = 'output-failure'
-    output.textContent = `Parsing error: ${result}`
-    runButton.disabled = true
-    return;
+    const error = document.createElement('span')
+    error.classList.add('error')
+    error.textContent = `Parsing error: ${result}`
+    logOutput(error)
+    return false
   }
 
-  output.className = 'output-success'
-  output.textContent = 'Compiled successfully'
-  if (!machine?.isRunning) runButton.disabled = false
+  const success = document.createElement('span')
+  success.classList.add('success')
+  success.textContent = 'Compiled successfully'
+
+  logOutput(success)
 
   automata = automataObject
-})
 
-runButton.addEventListener('click', async() => {
-  runButton.disabled = true
+  return true
+}
+
+runOrStopButton.addEventListener('click', async() => {
+  if (machine?.isRunning) {
+    runOrStopButton.innerHTML = '<i class="fas fa-play"></i>'
+    machine.stop()
+    const tapeString = tapeInput.value.trim()
+    onMachineSwitchedState(automata.initialStateId)
+    prepareTapeElement(tapeString)
+    return
+  }
+
+  if (!compile()) return
+
+  runOrStopButton.innerHTML = '<i class="fas fa-square"></i>'
 
   const tapeString = tapeInput.value.trim()
   machine = new TuringMachine(automata, tapeString)
@@ -102,15 +121,6 @@ runButton.addEventListener('click', async() => {
   prepareTapeElement(tapeString)
 
   machine.run(onMachineReplaced, onMachineMoved, onMachineSwitchedState, onMachineFinished)
-})
-
-resetButton.addEventListener('click', () => {
-  runButton.disabled = false
-  machine.stop()
-
-  const tapeString = tapeInput.value.trim()
-  onMachineSwitchedState(automata.initialStateId)
-  prepareTapeElement(tapeString)
 })
 
 tapeInput.addEventListener('input', () => {
@@ -200,9 +210,15 @@ function onMachineSwitchedState(stateId: string) {
 }
 
 function onMachineFinished(tape: Tape) {
-  runButton.disabled = false
+  runOrStopButton.innerHTML = '<i class="fas fa-play"></i>'
 }
 
 function timeout(milliseconds: number) {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
+
+window.onload = () => {
+  const span = document.createElement('span')
+  span.textContent = 'Welcome to Turing Machine Simulator.'
+  logOutput(span)
 }

@@ -5,19 +5,67 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Turing Machine</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="src/styles/tutorial.css">
   <link rel="stylesheet" href="src/styles/editor.css">
+  <link rel="stylesheet" href="src/styles/console.css">
   <link rel="stylesheet" href="src/styles/style.css">
-  <script type="module" src="src/editor.ts"></script>
+  <link rel="stylesheet" href="src/styles/machine.css">
+  <script type="module" src="src/resizing.ts" defer></script>
+  <script type="module" src="src/editor.ts" defer></script>
+  <script type="module" src="src/main.ts" defer></script>
 </head>
 <body>
   <div class="container">
-    <section class="editor">
-      <div id="line-numbers"></div>
-      <div id="code-container">
-        <textarea id="code" contenteditable="true" spellcheck="false" aria-autocomplete="none"></textarea>
-        <div id="layer"></div>
+    <div class="sidebar">
+      <a href="https://github.com/razfrumkin/turing-machine-simulator" target="_blank"><i class="fab fa-github"></i></a>
+      <button id="run-or-stop-button"><i class="fas fa-play"></i></button>
+      <div class="spacer"></div>
+      <button id="zoom-in-button" aria-label="Minimize editor"><i class="fas fa-plus"></i></button>
+      <button id="zoom-out-button" aria-label="Maximize editor"><i class="fas fa-minus"></i></button>
+    </div>
+    <div class="horizontal-section-container">
+      <!--
+      <section class="tutorial">
+        <span style="color: black; font-size: 72px; font-weight: bold;">Tutorial</span><br>
+        <p style="font-size: 32px;">
+          
+          This is a tutorial...
+        </p>
+      </section>
+      -->
+      </section>
+      <div class="horizontal-section-container" style="flex: 5">
+        <section class="editor">
+          <div id="line-numbers"></div>
+          <div id="code-container">
+            <textarea id="code" contenteditable spellcheck="false" aria-autocomplete="none"></textarea>
+            <div id="layer" contenteditable="false"></div>
+          </div>
+        </section>
+        <div class="resizer"></div>
+        <div class="vertical-section-container">
+          <section class="controls">
+            <div class="output">
+              <div id="console"></div>
+            </div>
+            <div class="options">
+              <input id="tape-input" class="text-field" type="text" placeholder="Tape input here...">
+            </div>
+          </section>
+          <div class="resizer"></div>
+          <section class="machine">
+            <span id="current-state"></span>
+            <div id="tape-container" class="tape">
+              <div id="tape-cells" class="cells">
+    
+              </div>
+              <div id="tape-pointer" class="pointer"></div>
+            </div>
+          </section>
+        </div>
       </div>
-    </section>
+    </div>
       <!--
       <div class="upper">
         <div class="heading-container">

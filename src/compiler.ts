@@ -50,7 +50,7 @@ export enum TokenType {
     ExpectedMatchingApostrophe = '!Expected matching apostrophe',
     ExpectedMatchingQuotation = '!Expected matching quotation',
     ExpectedGreaterThanSymbol = '!Expected greater than symbol',
-    IllegalChracter = '!Illegal character'
+    IllegalCharacter = '!Illegal character'
 }
 
 export function isError(type: TokenType): boolean {
@@ -175,7 +175,7 @@ export class Lexer {
     }
 
     tokens(): Token[] {
-        let tokens: Token[] = []
+        const tokens: Token[] = []
 
         while (this.position < this.code.length) {
             if (this.isSpace(this.current)) this.advance()
@@ -187,7 +187,7 @@ export class Lexer {
             else if (this.current === ',') tokens.push(this.makeComma())
             else if (this.current === '-') tokens.push(this.makeArrow())
             else {
-                tokens.push({ type: TokenType.IllegalChracter, value: '', position: this.position, length: 0 })
+                tokens.push({ type: TokenType.IllegalCharacter, value: '', position: this.position, length: 0 })
                 this.advance()
             }
         }
