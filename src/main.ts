@@ -1,4 +1,5 @@
-import { Lexer, Parser, Result, Token, isError } from './compiler'
+import { Lexer, Parser, TokenType } from './compiler'
+import { EditorMap, formatLexer, formatParser } from './diagnostics'
 import { clearOutput, logOutput } from './console'
 import { TMA, TuringMachine, Tape, TMADirection } from './turing-machine'
 
@@ -16,85 +17,42 @@ prepareTapeElement('')
 let machine: TuringMachine | null
 let automata: TMA
 
-class EditorMap {
-  private lines$: number[]
-
-  constructor(code: string) {
-    this.lines$ = [0]
-
-    this.generate(code)
-  }
-
-  private generate(code: string) {
-    for (let index = 0; index < code.length; index += 1) {
-      this.lines$[this.lines$.length - 1] += 1
-
-      if ('\r\n'.includes(code[index])) this.lines$.push(0)
-    }
-  }
-
-  toRowAndColumn(characterIndex: number): [number, number] {
-    let currentLine = 0
-    let currentColumn = 0
-
-    for (let index = 0; index < characterIndex; index += 1) {
-      if (currentColumn < this.lines$[currentLine] - 1) currentColumn += 1
-      else {
-        currentColumn = 0
-        currentLine += 1
-      }
-    }
-
-    return [currentLine + 1, currentColumn + 1]
-  }
-}
-
-function formatLexicalError(token: Token, map: EditorMap): string {
-  const [row, column] = map.toRowAndColumn(token.position)
-  return `Line ${row}, at column ${column}: ${token.type.toString().substring(1)}`
-}
-
 function compile(): boolean {
   const map = new EditorMap(code.value)
   const lexer = new Lexer(code.value)
   const tokens = lexer.tokens()
-  const errors = tokens.filter(token => isError(token.type))
+  const failure = tokens.some(token => token.type === TokenType.Error)
 
   clearOutput()
 
-  const span = document.createElement('span')
-
-  if (errors.length > 0) {
-    span.classList.add('error')
-
-    let outputString = formatLexicalError(errors[0], map)
-    for (let index = 1; index < errors.length; index += 1) {
-      outputString += `\r\n${formatLexicalError(errors[index], map)}`
-    }
-
-    span.textContent = outputString
-
-    logOutput(span)
+  if (failure) {
+    tokens.forEach(token => {
+      if (token.type !== TokenType.Error) return
+      const span = formatLexer(token, map)
+      span.appendChild(document.createTextNode('\n'))
+      logOutput(span)
+    })
 
     return false
   }
 
   const parser = new Parser(tokens)
-  const [automataObject, result] = parser.parse();
+  const { automata: automataObject, output: output } = parser.parse();
 
-  if (result != Result.Success) {
-    const error = document.createElement('span')
-    error.classList.add('error')
-    error.textContent = `Parsing error: ${result}`
-    logOutput(error)
+  if (output.length > 0) {
+    output.forEach(error => {
+      const span = formatParser(error, map)
+      span.appendChild(document.createTextNode('\n'))
+      logOutput(span)
+    })
     return false
   }
 
-  const success = document.createElement('span')
-  success.classList.add('success')
-  success.textContent = 'Compiled successfully'
+  const span = document.createElement('span')
+  span.classList.add('success')
+  span.textContent = 'Compiled successfully'
 
-  logOutput(success)
+  logOutput(span)
 
   automata = automataObject
 

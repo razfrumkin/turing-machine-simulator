@@ -1,4 +1,4 @@
-import { isError, Lexer, Token, TokenType } from './compiler'
+import { Lexer, Token, TokenType } from './compiler'
 import { clearOutput, logOutput } from './console'
 
 const lineNumbers = document.getElementById('line-numbers') as HTMLDivElement
@@ -70,7 +70,7 @@ function highlight(tokens: Token[]) {
     let currentPosition = 0
 
     tokens.forEach(token => {
-        if (token.type === TokenType.EndOfFile || isError(token.type)) return
+        if (token.type === TokenType.EndOfFile || token.type === TokenType.Error) return
 
         const [start, end, styleClass] = tokenHighlight(token)
 
