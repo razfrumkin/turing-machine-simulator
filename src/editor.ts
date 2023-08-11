@@ -1,5 +1,4 @@
 import { Lexer, Token, TokenType } from './compiler'
-import { clearOutput, logOutput } from './console'
 
 const lineNumbers = document.getElementById('line-numbers') as HTMLDivElement
 const code = document.getElementById('code') as HTMLTextAreaElement
