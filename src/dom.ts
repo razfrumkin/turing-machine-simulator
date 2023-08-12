@@ -15,6 +15,8 @@ const tapePointerElement = document.getElementById('tape-pointer') as HTMLDivEle
 let machine: TuringMachine | null
 let automata: TMA
 
+const MAX_OUTPUTS: number = 100
+
 function compile(): boolean {
     const map = new EditorMap(code.value)
     const lexer = new Lexer(code.value)
@@ -24,12 +26,16 @@ function compile(): boolean {
     clearOutput()
 
     if (failure) {
-        tokens.forEach(token => {
-        if (token.type !== TokenType.Error) return
-        const span = formatLexer(token, map)
-        span.appendChild(document.createTextNode('\n'))
-        logOutput(span)
-        })
+        let errors = 0
+        for (let index = 0; index < tokens.length; index += 1) {
+            if (errors > MAX_OUTPUTS) break
+            const token = tokens[index]
+            if (token.type !== TokenType.Error) continue
+            errors += 1
+            const span = formatLexer(token, map)
+            span.appendChild(document.createTextNode('\n'))
+            logOutput(span)
+        }
 
         return false
     }
@@ -38,11 +44,15 @@ function compile(): boolean {
     const { automata: automataObject, output: output } = parser.parse();
 
     if (output.length > 0) {
-        output.forEach(error => {
-        const span = formatParser(error, map)
-        span.appendChild(document.createTextNode('\n'))
-        logOutput(span)
-        })
+        let outputs = 0
+        for (let index = 0; index < output.length; index += 1) {
+            if (outputs > MAX_OUTPUTS) break
+            const message = output[index]
+            const span = formatParser(message, map)
+            span.appendChild(document.createTextNode('\n'))
+            logOutput(span)
+        }
+
         return false
     }
 
@@ -61,7 +71,7 @@ runOrStopButton.addEventListener('click', async() => {
     if (machine?.isRunning) {
         runOrStopButton.innerHTML = '<i class="fas fa-play"></i>'
         machine.stop()
-        const tapeString = tapeInput.value.trim()
+        const tapeString = tapeInput.value
         onMachineSwitchedState(automata.initialStateId)
         prepareTapeElement(tapeString)
         return
@@ -71,7 +81,7 @@ runOrStopButton.addEventListener('click', async() => {
 
     runOrStopButton.innerHTML = '<i class="fas fa-square"></i>'
 
-    const tapeString = tapeInput.value.trim()
+    const tapeString = tapeInput.value
     machine = new TuringMachine(automata, tapeString)
     onMachineSwitchedState(automata.initialStateId)
     prepareTapeElement(tapeString)
@@ -91,7 +101,7 @@ export function prepareTapeElement(value: string) {
         tapeContainer.style.display = 'none'
         return
     }
-    tapeContainer.style.display = 'block'
+    tapeContainer.style.display = 'flex'
 
     value = value + ' '
     for (let index = 0; index < value.length; index += 1) {
@@ -129,7 +139,7 @@ async function movePointerToCell(index: number) {
     const cellOffset = cellRectangle.left
     const pointerOffset = cellOffset - tapeOffset - tapePointerElement.getBoundingClientRect().width / 2 + cellRectangle.width / 2
 
-    tapePointerElement.style.transform = `translateX(${pointerOffset}px)`
+    tapeCellsElement.style.transform = `translateX(${index * -100}px)`
 }
 
 const DURATION_MILLISECONDS: number = 500
