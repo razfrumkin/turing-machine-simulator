@@ -7,7 +7,7 @@
 .editor {
     position: relative;
     display: flex;
-    flex: 1;
+    flex: 2;
     font-family: 'Menlo', monospace;
     line-height: 1.5;
     overflow: hidden;

@@ -1,16 +1,14 @@
 import { Lexer, Parser, TokenType } from './compiler'
 import { EditorMap, formatLexer, formatParser } from './diagnostics'
 import { clearOutput, logOutput } from './console'
-import { TMA, TuringMachine, Tape, TMADirection } from './turing-machine'
+import { TMA, TuringMachine, Tape, TMADirection, tapeString, BLANK_CELLS_PER_SIDE } from './turing-machine'
 
 const code = document.getElementById('code') as HTMLTextAreaElement
 const runOrStopButton = document.getElementById('run-or-stop-button') as HTMLButtonElement
 const tapeInput = document.getElementById('tape-input') as HTMLInputElement
 const currentState = document.getElementById('current-state') as HTMLSpanElement
 
-const tapeContainer = document.getElementById('tape-container') as HTMLDivElement
 const tapeCellsElement = document.getElementById('tape-cells') as HTMLDivElement
-const tapePointerElement = document.getElementById('tape-pointer') as HTMLDivElement
 
 let machine: TuringMachine | null
 let automata: TMA
@@ -81,7 +79,7 @@ runOrStopButton.addEventListener('click', async() => {
 
     runOrStopButton.innerHTML = '<i class="fas fa-square"></i>'
 
-    const tapeString = tapeInput.value
+    const tapeString = tapeInput.value.trim()
     machine = new TuringMachine(automata, tapeString)
     onMachineSwitchedState(automata.initialStateId)
     prepareTapeElement(tapeString)
@@ -90,20 +88,16 @@ runOrStopButton.addEventListener('click', async() => {
 })
 
 tapeInput.addEventListener('input', () => {
-    prepareTapeElement(tapeInput.value)
+    prepareTapeElement(tapeInput.value.trim())
 })
 
 export function prepareTapeElement(value: string) {
     while (tapeCellsElement.firstChild)
         tapeCellsElement.removeChild(tapeCellsElement.firstChild)
 
-    if (value == '') {
-        tapeContainer.style.display = 'none'
-        return
-    }
-    tapeContainer.style.display = 'flex'
+    if (value === '') value = ' '
 
-    value = value + ' '
+    value = tapeString(value)
     for (let index = 0; index < value.length; index += 1) {
         const cell = document.createElement('div')
         cell.className = 'cell'
@@ -111,7 +105,7 @@ export function prepareTapeElement(value: string) {
         tapeCellsElement.appendChild(cell)
     }
 
-    movePointerToCell(0)
+    movePointerToCell(BLANK_CELLS_PER_SIDE)
 }
 
 // appends before
@@ -133,16 +127,12 @@ function pushCellElement() {
 async function movePointerToCell(index: number) {
     const cell = tapeCellsElement.children[index]
     
-    const cellRectangle = cell.getBoundingClientRect()
-    const tapeRectangle = tapeCellsElement.getBoundingClientRect()
-    const tapeOffset = tapeRectangle.left
-    const cellOffset = cellRectangle.left
-    const pointerOffset = cellOffset - tapeOffset - tapePointerElement.getBoundingClientRect().width / 2 + cellRectangle.width / 2
+    const length = cell.getBoundingClientRect().width
 
-    tapeCellsElement.style.transform = `translateX(${index * -100}px)`
+    tapeCellsElement.style.transform = `translateX(${index * -length}px)`
 }
 
-const DURATION_MILLISECONDS: number = 500
+const DURATION_MILLISECONDS: number = 1000
 
 async function onMachineReplaced(tape: Tape) {
     const cell = tapeCellsElement.children[tape.pointer]
@@ -156,12 +146,12 @@ async function onMachineReplaced(tape: Tape) {
 async function onMachineMoved(tape: Tape, direction: TMADirection) {
     if (direction === TMADirection.Left) {
         if (tapeCellsElement.children.length < tape.cells.length) {
-        insertCellElement()
-        movePointerToCell(tape.pointer + 1)
+            movePointerToCell(tape.pointer + 1)
+            insertCellElement()
         }
     } else {
-        if (tapeCellsElement.children.length < tape.cells.length) {
-        pushCellElement()
+            if (tapeCellsElement.children.length < tape.cells.length) {
+            pushCellElement()
         }
     }
 

@@ -1,6 +1,7 @@
 :root {
-    --cell-length: 100px;
-    --pointer-length: calc(var(--cell-length) * 1.5)
+    --cell-length: 50px;
+    --cell-thickness: 2px;
+    --pointer-length: calc(var(--cell-length) * 2)
 }
 
 .machine {
@@ -24,24 +25,24 @@
 .cells {
   display: flex;
   flex-direction: row;
-  border-radius: 10px;
-  border: solid var(--text-color) 3px;
+  border-radius: 3px;
+  border: var(--cell-thickness) solid var(--text-color);
   height: var(--cell-length);
   position: absolute;
-  margin-left: calc(var(--cell-length) / -2);
+  margin-left: calc(calc(var(--cell-length) / -2) - var(--cell-thickness));
   transition: transform 0.5s ease-in-out;
 }
 
 .cell {
-  font-family: var(--text-font);
+  font-family: 'Menlo';
   color: var(--text-color);
-  font-size: 30px;
+  font-size: 20px;
   width: var(--cell-length);
   height: var(--cell-length);
   display: flex;
   justify-content: center;
   align-items: center;
-  border-right: solid var(--text-color) 3px;
+  border-right: solid var(--text-color) var(--cell-thickness);
   box-sizing: border-box;
 }
 
@@ -57,4 +58,5 @@
   border: 5px solid royalblue;
   border-radius: 10px;
   margin-left: calc(var(--pointer-length) / -2);
+  box-sizing: border-box;
 }

@@ -11,6 +11,7 @@
   --text-font: 'Quicksand', sans-serif;
 
   --resizer-background-color: black;
+  --minimum-section-dimension: 200px;
 }
 
 html {
@@ -45,6 +46,14 @@ body {
   flex-direction: row;
   overflow: hidden;
   flex: 1;
+}
+
+.horizontal-section-container section {
+  min-width: var(--minimum-section-dimension);
+}
+
+.vertical-section-container section {
+  min-height: var(--minimum-section-dimension);
 }
 
 .vertical-section-container {

@@ -1,3 +1,10 @@
+export const BLANK_CELLS_PER_SIDE: number = 20
+const BLANK_SEQUENCE: string = ' '.repeat(BLANK_CELLS_PER_SIDE)
+
+export function tapeString(word: string): string {
+    return `${BLANK_SEQUENCE}${word}${BLANK_SEQUENCE}`
+}
+
 // TMA stands for turing machine automata
 
 export type TMA = {
@@ -37,7 +44,7 @@ export class TuringMachine {
     private async executeState(stateId: string, onReplaced: (tape: Tape) => void, onMoved: (tape: Tape, direction: TMADirection) => void, onSwitchedState: (stateId: string) => void) {
         const state = this.automata$.states[stateId]
         for (const caseCharacter in state) {
-            if (this.tape$.current == caseCharacter) {
+            if (this.tape$.current === caseCharacter) {
                 const turingCase = state[caseCharacter]
                 await this.tape$.executeCase(turingCase, onReplaced, onMoved)
 
@@ -77,18 +84,19 @@ export class Tape {
 
     constructor(machine: TuringMachine, word: string) {
         this.machine = machine
-        this.cells$ = word + ' '
-        this.pointer$ = 0
+        this.cells$ = tapeString(word)
+        this.pointer$ = BLANK_CELLS_PER_SIDE
     }
 
     moveLeft() {
-        if (this.pointer$ == 0) this.cells$ = ' ' + this.cells$
+        if (this.pointer$ < BLANK_CELLS_PER_SIDE) this.cells$ = ' ' + this.cells$
         else this.pointer$ -= 1
     }
 
     moveRight() {
+        const offset = this.cells$.length - this.pointer$
         this.pointer$ += 1
-        if (this.pointer$ == this.cells$.length) {
+        if (offset <= BLANK_CELLS_PER_SIDE) {
             this.cells$ += ' '
         }
     }

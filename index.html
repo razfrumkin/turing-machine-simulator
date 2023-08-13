@@ -35,16 +35,16 @@
       </section>
       -->
       </section>
-      <div class="horizontal-section-container" style="flex: 5">
-        <section class="editor">
-          <div id="line-numbers"></div>
-          <div id="code-container">
-            <textarea id="code" contenteditable spellcheck="false" aria-autocomplete="none"></textarea>
-            <div id="layer" contenteditable="false"></div>
-          </div>
-        </section>
-        <div class="resizer"></div>
-        <div class="vertical-section-container">
+      <div class="vertical-section-container">
+        <div class="horizontal-section-container" style="flex: 3">
+          <section class="editor">
+            <div id="line-numbers"></div>
+            <div id="code-container">
+              <textarea id="code" contenteditable spellcheck="false" aria-autocomplete="none"></textarea>
+              <div id="layer" contenteditable="false"></div>
+            </div>
+          </section>
+          <div class="resizer"></div>
           <section class="controls">
             <div class="output">
               <div id="console"></div>
@@ -54,16 +54,16 @@
               <span id="current-state"></span>
             </div>
           </section>
-          <div class="resizer"></div>
-          <section class="machine">
-            <div id="tape-container" class="tape">
-              <div id="tape-cells" class="cells">
-    
-              </div>
-              <div id="tape-pointer" class="pointer"></div>
-            </div>
-          </section>
         </div>
+        <div class="resizer"></div>
+        <section class="machine">
+          <div id="tape-container" class="tape">
+            <div id="tape-cells" class="cells">
+  
+            </div>
+            <div id="tape-pointer" class="pointer"></div>
+          </div>
+        </section>
       </div>
     </div>
       <!--
