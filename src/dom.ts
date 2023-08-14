@@ -4,16 +4,77 @@ import { clearOutput, logOutput } from './console'
 import { TMA, TuringMachine, Tape, TMADirection, tapeString, BLANK_CELLS_PER_SIDE } from './turing-machine'
 
 const code = document.getElementById('code') as HTMLTextAreaElement
-const runOrStopButton = document.getElementById('run-or-stop-button') as HTMLButtonElement
+const compileButton = document.getElementById('compile-button') as HTMLButtonElement
+const stepButton = document.getElementById('step-button') as HTMLButtonElement
+const runOrPauseButton = document.getElementById('run-or-pause-button') as HTMLButtonElement
+const resetButton = document.getElementById('reset-button') as HTMLButtonElement
+
 const tapeInput = document.getElementById('tape-input') as HTMLInputElement
 const currentState = document.getElementById('current-state') as HTMLSpanElement
 
 const tapeCellsElement = document.getElementById('tape-cells') as HTMLDivElement
 
-let machine: TuringMachine | null
+let machine: TuringMachine | null = null
 let automata: TMA
 
 const MAX_OUTPUTS: number = 100
+
+const REPLACE_MILLISECONDS: number = 250
+const MOVE_MILLISECONDS: number = 750
+
+compileButton.addEventListener('click', () => {
+    if (!compile()) return
+
+    stepButton.disabled = false
+    runOrPauseButton.disabled = false
+    resetButton.disabled = false
+
+    const tapeString = tapeInput.value.trim()
+    machine = new TuringMachine(automata, tapeString)
+    onMachineSwitchedState(automata.initialStateId)
+    prepareTapeElement(tapeString)
+})
+
+stepButton.addEventListener('click', async () => {
+    tapeInput.disabled = true
+
+    stepButton.disabled = true
+    runOrPauseButton.disabled = true
+    await machine!.step(onMachineReplaced, onMachineMoved, onMachineSwitchedState, onMachineFinished)
+    if (machine!.isRunning) {
+        stepButton.disabled = false
+        runOrPauseButton.disabled = false
+    }
+})
+
+runOrPauseButton.addEventListener('click', () => {
+    if (!machine!.isPaused) {
+        machine!.pause()
+        stepButton.disabled = false
+        runOrPauseButton.innerText = 'Run'
+        return
+    }
+
+    tapeInput.disabled = true
+    stepButton.disabled = true
+    runOrPauseButton.innerText = 'Pause'
+
+    machine!.run(onMachineReplaced, onMachineMoved, onMachineSwitchedState, onMachineFinished)
+})
+
+resetButton.addEventListener('click', () => {
+    prepareTapeElement(tapeInput.value.trim())
+
+    if (machine === null) return
+    stepButton.disabled = false
+    runOrPauseButton.disabled = false
+
+    machine.stop()
+
+    machine.reset(tapeInput.value.trim())
+
+    onMachineSwitchedState(automata.initialStateId)
+})
 
 function compile(): boolean {
     const map = new EditorMap(code.value)
@@ -22,6 +83,10 @@ function compile(): boolean {
     const failure = tokens.some(token => token.type === TokenType.Error)
 
     clearOutput()
+
+    const loadingSpan = document.createElement('span')
+    loadingSpan.textContent = 'Compiling...\n'
+    logOutput(loadingSpan)
 
     if (failure) {
         let errors = 0
@@ -65,30 +130,8 @@ function compile(): boolean {
     return true
 }
 
-runOrStopButton.addEventListener('click', async() => {
-    if (machine?.isRunning) {
-        runOrStopButton.innerHTML = '<i class="fas fa-play"></i>'
-        machine.stop()
-        const tapeString = tapeInput.value
-        onMachineSwitchedState(automata.initialStateId)
-        prepareTapeElement(tapeString)
-        return
-    }
-
-    if (!compile()) return
-
-    runOrStopButton.innerHTML = '<i class="fas fa-square"></i>'
-
-    const tapeString = tapeInput.value.trim()
-    machine = new TuringMachine(automata, tapeString)
-    onMachineSwitchedState(automata.initialStateId)
-    prepareTapeElement(tapeString)
-
-    machine.run(onMachineReplaced, onMachineMoved, onMachineSwitchedState, onMachineFinished)
-})
-
 tapeInput.addEventListener('input', () => {
-    prepareTapeElement(tapeInput.value.trim())
+    resetButton.dispatchEvent(new Event('click'))
 })
 
 export function prepareTapeElement(value: string) {
@@ -124,7 +167,7 @@ function pushCellElement() {
     tapeCellsElement.appendChild(cell)
 }
 
-async function movePointerToCell(index: number) {
+function movePointerToCell(index: number) {
     const cell = tapeCellsElement.children[index]
     
     const length = cell.getBoundingClientRect().width
@@ -132,12 +175,10 @@ async function movePointerToCell(index: number) {
     tapeCellsElement.style.transform = `translateX(${index * -length}px)`
 }
 
-const DURATION_MILLISECONDS: number = 1000
-
 async function onMachineReplaced(tape: Tape) {
     const cell = tapeCellsElement.children[tape.pointer]
 
-    await timeout(DURATION_MILLISECONDS)
+    await timeout(REPLACE_MILLISECONDS)
     if (!tape.isMachineRunning) return
 
     cell.textContent = tape.current
@@ -155,7 +196,7 @@ async function onMachineMoved(tape: Tape, direction: TMADirection) {
         }
     }
 
-    await timeout(DURATION_MILLISECONDS)
+    await timeout(MOVE_MILLISECONDS)
     if (!tape.isMachineRunning) return
 
     movePointerToCell(tape.pointer)
@@ -166,15 +207,18 @@ function onMachineSwitchedState(stateId: string) {
 }
 
 function onMachineFinished(tape: Tape) {
-    runOrStopButton.innerHTML = '<i class="fas fa-play"></i>'
+    tapeInput.disabled = false
+    stepButton.disabled = true
+    runOrPauseButton.disabled = true
+    runOrPauseButton.innerText = 'Run'
 }
 
-function timeout(milliseconds: number) {
+function timeout(milliseconds: number): Promise<unknown> {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
 window.onload = () => {
     const span = document.createElement('span')
     span.textContent = 'Welcome to Turing Machine Simulator.'
-    logOutput(span)
+    logOutput(span, false)
 }

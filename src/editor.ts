@@ -6,7 +6,7 @@ const layer = document.getElementById('layer') as HTMLDivElement
 
 const MINIMUM_FONT_SIZE: number = 12
 const MAXIMUM_FONT_SIZE: number = 36
-const DEFAULT_FONT_SIZE: number = 24
+const DEFAULT_FONT_SIZE: number = 22
 let fontSize: number = DEFAULT_FONT_SIZE
 updateEditorFontSize()
 syncScroll()

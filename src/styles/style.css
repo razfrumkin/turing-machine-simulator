@@ -98,16 +98,12 @@ body {
   border-radius: 5px;
   cursor: pointer;
   color: rgb(122, 122, 122);
-  font-size: 40px;
+  font-size: 24px;
   margin: 10px;
 }
 
-.sidebar button:hover {
+.sidebar a:hover, button:hover {
   color: white;
-}
-
-.sidebar img {
-  display: block;
 }
 
 .primary-button {

@@ -32,6 +32,7 @@ export class TuringMachine {
     private tape$: Tape
     private currentStateId$: string
     private isRunning$: boolean
+    private isPaused$: boolean
 
     constructor(automata: TMA, tape: string) {
         this.automata$ = automata
@@ -39,6 +40,12 @@ export class TuringMachine {
         this.currentStateId$ = automata.initialStateId
         
         this.isRunning$ = false
+        this.isPaused$ = true
+    }
+
+    reset(tape: string) {
+        this.tape$ = new Tape(this, tape)
+        this.currentStateId$ = this.automata$.initialStateId
     }
 
     private async executeState(stateId: string, onReplaced: (tape: Tape) => void, onMoved: (tape: Tape, direction: TMADirection) => void, onSwitchedState: (stateId: string) => void) {
@@ -60,20 +67,40 @@ export class TuringMachine {
 
     async run(onReplaced: (tape: Tape) => void, onMoved: (tape: Tape, direction: TMADirection) => void, onSwitchedState: (stateId: string) => void, onFinished: (tape: Tape) => void) {
         this.isRunning$ = true
+        this.isPaused$ = false
 
-        while (this.isRunning) {
-            await this.executeState(this.currentStateId$, onReplaced, onMoved, onSwitchedState)
+        while (this.isRunning$ && !this.isPaused$) {
+            await this.step(onReplaced, onMoved, onSwitchedState, onFinished)
         }
+    }
 
-        onFinished(this.tape$)
+    async step(onReplaced: (tape: Tape) => void, onMoved: (tape: Tape, direction: TMADirection) => void, onSwitchedState: (stateId: string) => void, onFinished: (tape: Tape) => void) {
+        this.isRunning$ = true
+        this.isPaused$ = false
+
+        await this.executeState(this.currentStateId$, onReplaced, onMoved, onSwitchedState)
+
+        if (!this.isRunning$ && !this.isPaused$) {
+            this.stop()
+            onFinished(this.tape$)
+        }
     }
 
     stop() {
         this.isRunning$ = false
+        this.isPaused$ = true
+    }
+
+    pause() {
+        this.isPaused$ = true
     }
 
     get isRunning(): boolean {
         return this.isRunning$
+    }
+
+    get isPaused(): boolean {
+        return this.isPaused$
     }
 }
 

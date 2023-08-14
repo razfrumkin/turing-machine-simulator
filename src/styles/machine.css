@@ -1,7 +1,7 @@
 :root {
-    --cell-length: 50px;
+    --cell-length: 75px;
     --cell-thickness: 2px;
-    --pointer-length: calc(var(--cell-length) * 2)
+    --pointer-length: calc(var(--cell-length) * 1.75)
 }
 
 .machine {
@@ -30,13 +30,13 @@
   height: var(--cell-length);
   position: absolute;
   margin-left: calc(calc(var(--cell-length) / -2) - var(--cell-thickness));
-  transition: transform 0.5s ease-in-out;
+  transition: transform 0.25s ease-in-out;
 }
 
 .cell {
   font-family: 'Menlo';
   color: var(--text-color);
-  font-size: 20px;
+  font-size: 32px;
   width: var(--cell-length);
   height: var(--cell-length);
   display: flex;
