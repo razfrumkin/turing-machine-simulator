@@ -12,6 +12,11 @@ updateEditorFontSize()
 syncScroll()
 updateEditor()
 
+const matchings: { [key: string]: string } = {
+    '{': '}',
+    '#': '#'
+}
+
 const zoomInButton = document.getElementById('zoom-in-button') as HTMLButtonElement
 const zoomOutButton = document.getElementById('zoom-out-button') as HTMLButtonElement
 
@@ -81,7 +86,7 @@ function highlight(tokens: Token[], symbols: SymbolTable) {
     tokens.forEach(token => {
         if (token.type === TokenType.EndOfFile || token.type === TokenType.Error) return
 
-        const [start, end, styleClass] = tokenHighlight(token, symbols)
+        const [start, end, styleClass, hovered] = tokenHighlight(token, symbols)
 
         const before = code.value.substring(currentPosition, start)
         layer.appendChild(document.createTextNode(before))
@@ -90,6 +95,16 @@ function highlight(tokens: Token[], symbols: SymbolTable) {
         const span = document.createElement('span')
         span.textContent = highlight
         span.classList.add(styleClass)
+        if (hovered) {
+            span.addEventListener('mouseover', event => {
+
+            })
+
+            span.addEventListener('mouseleave', () => {
+
+            })
+        }
+
         layer.appendChild(span)
 
         currentPosition = end
@@ -99,8 +114,10 @@ function highlight(tokens: Token[], symbols: SymbolTable) {
     layer.appendChild(document.createTextNode(after))
 }
 
-function tokenHighlight(token: Token, symbols: SymbolTable): [number, number, string] {
+function tokenHighlight(token: Token, symbols: SymbolTable): [number, number, string, HTMLSpanElement?] {
     switch (token.type) {
+        case TokenType.Comment:
+            return [token.position - 1, token.position + token.length + 1, 'comment']
         case TokenType.Character:
             return [token.position - 1, token.position + token.length + 1, 'character']
         case TokenType.String:
@@ -138,13 +155,13 @@ function handleKeyPress(event: KeyboardEvent) {
         code.selectionEnd = end + 1
 
         code.dispatchEvent(new Event('input'))
-    } else if (event.key === '{') {
+    } else if (event.key in matchings) {
         event.preventDefault()
 
         const start = code.selectionStart
         const end = code.selectionEnd
 
-        code.value = code.value.substring(0, start) + '{}' + code.value.substring(end)
+        code.value = code.value.substring(0, start) + event.key + matchings[event.key] + code.value.substring(end)
 
         code.selectionStart = start + 1
         code.selectionEnd = end + 1

@@ -2,6 +2,7 @@ import { TMA, TMAState, TMADirection } from './turing-machine'
 import { LexerResult, ParserResult, ParserResultType } from './diagnostics'
 
 export enum TokenType {
+    Comment,
     Character,
     String,
 
@@ -87,6 +88,23 @@ export class Lexer {
         return ' \f\n\r\t\v'.includes(character)
     }
 
+    private makeComment(): Token {
+        this.advance()
+
+        const start = this.position
+
+        while (this.position < this.code.length) {
+            if (this.current === '#') {
+                this.advance()
+                return { type: TokenType.Comment, result: LexerResult.Success, value: '', position: start, length: this.position - start - 1 }
+            }
+
+            this.advance()
+        }
+
+        return { type: TokenType.Error, result: LexerResult.ExpectedMatchingHashtag, value: '', position: this.position, length: this.position - start - 1 }
+    }
+
     // TODO: add support for escape sequences
 
     private makeCharacter(): Token {
@@ -121,7 +139,7 @@ export class Lexer {
             this.advance()
         }
 
-        return { type: TokenType.Error, result: LexerResult.ExpectedMatchingQuotations, value: '', position: this.position, length: 1 }
+        return { type: TokenType.Error, result: LexerResult.ExpectedMatchingQuotations, value: '', position: this.position, length: value.length }
     }
 
     private makeIdentifier(): Token {
@@ -175,6 +193,7 @@ export class Lexer {
 
         while (this.position < this.code.length) {
             if (this.isSpace(this.current)) this.advance()
+            else if (this.current === '#') tokens.push(this.makeComment())
             else if (this.current === '\'') tokens.push(this.makeCharacter())
             else if (this.current === '"') tokens.push(this.makeString())
             else if (this.current === '_' || isAlphabetic(this.current)) tokens.push(this.makeIdentifier())
@@ -199,7 +218,7 @@ export class Parser {
     private current: Token
 
     constructor(tokens: Token[]) {
-        this.tokens = tokens
+        this.tokens = tokens.filter(token => token.type !== TokenType.Comment)
         this.index = 0
         this.current = this.tokens[this.index]
     }
@@ -395,143 +414,3 @@ export class Parser {
         return { automata: automata, symbols: symbols, output: output }
     }
 }
-
-/*
-export class ExperimentalParser {
-    private tokens: Token[]
-    private index: number
-    private current: Token
-
-    constructor(tokens: Token[]) {
-        this.tokens = tokens
-        this.index = 0
-        this.current = this.tokens[this.index]
-    }
-
-    private advance() {
-        this.index += 1
-        if (this.current.type !== TokenType.EndOfFile) this.current = this.tokens[this.index]
-    }
-
-    private parseCase(stateId: string, state: TMAState): ParserResult {
-        if (this.current.type !== TokenType.Character) return { type: ParserResultType.ExpectedCaseCharacter, position: this.current.position, value: '' }
-        const characterCase = this.current.value
-        if (characterCase in state) return { type: ParserResultType.CharacterCaseAlreadyExistsWithinState, position: this.current.position, value: characterCase }
-        this.advance()
-
-        if (this.current.type as TokenType !== TokenType.Comma) return { type: ParserResultType.ExpectedCommaBetweenCaseCharacterAndReplacementCharacter, position: this.current.position, value: '' }
-        this.advance()
-
-        if (this.current.type !== TokenType.Character) return { type: ParserResultType.ExpectedReplacementCharacter, position: this.current.position, value: '' }
-        const replacement = this.current.value
-        this.advance()
-
-        if (this.current.type as TokenType !== TokenType.Comma) return { type: ParserResultType.ExpectedCommaBetweenReplacementCharacterAndTapeDirection, position: this.current.position, value: ''}
-        this.advance()
-
-        const direction =
-            this.current.type as TokenType === TokenType.Left ? TMADirection.Left :
-            this.current.type as TokenType === TokenType.Right ? TMADirection.Right :
-            TMADirection.Error
-        if (direction === TMADirection.Error) return { type: ParserResultType.ExpectedDirection, position: this.current.position, value: '' }
-        this.advance()
-
-        if (this.current.type as TokenType !== TokenType.Arrow) return { type: ParserResultType.ExpectedArrowBetweenDirectionAndTargetState, position: this.current.position, value: '' }
-        this.advance()
-
-        if (this.current.type as TokenType === TokenType.Self) {
-            const targetStateId = stateId
-            this.advance()
-
-            state[characterCase] = { replacement: replacement, direction: direction, targetStateId: targetStateId }
-
-            return { type: ParserResultType.Success, position: 0, value: '' }
-        }
-
-        if (this.current.type as TokenType !== TokenType.String) return { type: ParserResultType.ExpectedTargetState, position: this.current.position, value: '' }
-        const targetStateId = this.current.value
-        if (targetStateId.length === 0) return { type: ParserResultType.StateIdMustNotBeEmpty, position: this.current.position, value: '' }
-
-        this.advance()
-
-        state[characterCase] = { replacement: replacement, direction: direction, targetStateId: targetStateId }
-
-        return { type: ParserResultType.Success, position: 0, value: '' }
-    }
-
-    private parseState(automata: TMA): ParserResult[] {
-        let state: TMAState = {}
-
-        let isInitialState = false
-
-        if (this.current.type === TokenType.Initial) {
-            if (automata.initialStateId !== '') return [{ type: ParserResultType.InitialStateAlreadyExists, position: 0, value: automata.initialStateId }]
-            isInitialState = true
-            this.advance()
-        }
-
-        if (this.current.type !== TokenType.State) return [{ type: ParserResultType.ExpectedKeywordState, position: this.current.position, value: '' }]
-        this.advance()
-
-        if (this.current.type as TokenType !== TokenType.String) return [{ type: ParserResultType.ExpectedStateId, position: this.current.position, value: '' }]
-        const stateId = this.current.value
-        if (stateId.length === 0) return [{ type: ParserResultType.StateIdMustNotBeEmpty, position: this.current.position, value: '' }]
-        if (stateId in automata.states) return [{ type: ParserResultType.StateIdAlreadyExists, position: 0, value: this.current.value }]
-        this.advance()
-
-        if (this.current.type as TokenType !== TokenType.LeftCurlyBrace) return [{ type: ParserResultType.ExpectedLeftCurlyBracket, position: this.current.position, value: '' }]
-        this.advance()
-
-        const output: ParserResult[] = []
-
-        while (this.current.type as TokenType !== TokenType.RightCurlyBrace && this.current.type as TokenType !== TokenType.EndOfFile) {
-            const result = this.parseCase(stateId, state)
-            if (result.type !== ParserResultType.Success) {
-                output.push(result)
-                this.advance()
-            }
-        }
-        this.advance()
-
-        automata.states[stateId] = state
-
-        if (isInitialState) automata.initialStateId = stateId
-
-        return output
-    }
-
-    parse(): { automata: TMA, output: ParserResult[] } {
-        let automata: TMA = { initialStateId: '', states: {} }
-
-        if (this.tokens.length === 0) return { automata: automata, output: [{ type: ParserResultType.NoInitialStateExists, position: 0, value: '' }] }
-
-        const output: ParserResult[] = []
-
-        while (this.current.type !== TokenType.EndOfFile) {
-            const result = this.parseState(automata)
-            if (result.length > 0) {
-                output.push(...result)
-                this.advance()
-            }
-        }
-
-        if (automata.initialStateId === '') {
-            output.push({ type: ParserResultType.NoInitialStateExists, position: 0, value: '' })
-        }
-
-        for (const stateId in automata.states) {
-            const state = automata.states[stateId]
-
-            for (const caseCharacter in state) {
-                const caseObject = state[caseCharacter]
-                const targetStateId = caseObject.targetStateId
-
-                if (!(targetStateId in automata.states)) {
-                    output.push({ type: ParserResultType.StateIdDoesNotExist, position: 0, value: targetStateId })
-                }
-            }
-        }
-
-        return { automata: automata, output: output }
-    }
-}*/

@@ -36,6 +36,7 @@ export enum LexerResult {
     Success,
 
     ExpectedCharacterExpression,
+    ExpectedMatchingHashtag,
     ExpectedMatchingApostrophe,
     ExpectedMatchingQuotations,
     ExpectedGreaterThanSymbol,
@@ -195,6 +196,11 @@ export function formatLexer(token: Token, map: EditorMap): HTMLSpanElement {
             span.appendChild(document.createTextNode('Error in '))
             span.appendChild(formatRowAndColumn(row, column))
             span.appendChild(document.createTextNode(': Expected character expression'))
+            return span
+        case LexerResult.ExpectedMatchingHashtag:
+            span.appendChild(document.createTextNode('Error in '))
+            span.appendChild(formatRowAndColumn(row, column))
+            span.appendChild(document.createTextNode(': Expected \'#\''))
             return span
         case LexerResult.ExpectedMatchingApostrophe:
             span.appendChild(document.createTextNode('Error in '))
