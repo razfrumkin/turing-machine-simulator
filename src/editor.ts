@@ -1,4 +1,4 @@
-import { Lexer, Token, TokenType } from './compiler'
+import { Lexer, Parser, SymbolTable, SymbolType, Token, TokenType } from './compiler'
 
 const lineNumbers = document.getElementById('line-numbers') as HTMLDivElement
 const code = document.getElementById('code') as HTMLTextAreaElement
@@ -61,17 +61,27 @@ function updateEditor() {
     const tokens = lexer.tokens()
 
     updateLineNumbers()
-    highlight(tokens)
+
+    const failure = tokens.some(token => token.type === TokenType.Error)
+    if (failure) {
+        highlight(tokens, {})
+        return
+    }
+
+    const parser = new Parser(tokens)
+    const symbols = parser.parse().symbols
+
+    highlight(tokens, symbols)
 }
 
-function highlight(tokens: Token[]) {
+function highlight(tokens: Token[], symbols: SymbolTable) {
     layer.textContent = ''
     let currentPosition = 0
 
     tokens.forEach(token => {
         if (token.type === TokenType.EndOfFile || token.type === TokenType.Error) return
 
-        const [start, end, styleClass] = tokenHighlight(token)
+        const [start, end, styleClass] = tokenHighlight(token, symbols)
 
         const before = code.value.substring(currentPosition, start)
         layer.appendChild(document.createTextNode(before))
@@ -89,13 +99,18 @@ function highlight(tokens: Token[]) {
     layer.appendChild(document.createTextNode(after))
 }
 
-function tokenHighlight(token: Token): [number, number, string] {
+function tokenHighlight(token: Token, symbols: SymbolTable): [number, number, string] {
     switch (token.type) {
         case TokenType.Character:
             return [token.position - 1, token.position + token.length + 1, 'character']
         case TokenType.String:
             return [token.position - 1, token.position + token.length + 1, 'string']
         case TokenType.Identifier:
+            if (token.value in symbols) {
+                if (symbols[token.value].type === SymbolType.State) return [token.position, token.position + token.length, 'state-id']
+                return [token.position, token.position + token.length, 'constant']
+            }
+
             return [token.position, token.position + token.length, 'default']
         case TokenType.LeftCurlyBrace:
             return [token.position, token.position + token.length, 'default']

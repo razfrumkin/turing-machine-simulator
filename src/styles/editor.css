@@ -93,6 +93,14 @@ span.arrow {
     color: rgb(102, 217, 239);
 }
 
+span.state-id {
+    color: rgb(196, 227, 134);
+}
+
+span.constant {
+    color: rgb(54, 90, 97);
+}
+
 span.default {
     color: var(--text-editor-foreground-color);
 }

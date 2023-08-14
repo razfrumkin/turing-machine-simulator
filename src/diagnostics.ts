@@ -16,11 +16,14 @@ export enum ParserResultType {
     ExpectedLeftCurlyBracket,
 
     InitialStateAlreadyExists,
-    StateIdAlreadyExists,
-    StateIdMustNotBeEmpty,
+    IdAlreadyInUse,
     CharacterCaseAlreadyExistsWithinState,
     NoInitialStateExists,
     StateIdDoesNotExist,
+    CouldNotFindConstant,
+
+    ExpectedConstantIdentifier,
+    ExpectedConstantValue,
 }
 
 export type ParserResult = {
@@ -43,32 +46,32 @@ export class EditorMap {
     private lines$: number[]
   
     constructor(code: string) {
-      this.lines$ = [0]
-  
-      this.generate(code)
+        this.lines$ = [0]
+    
+        this.generate(code)
     }
   
     private generate(code: string) {
-      for (let index = 0; index < code.length; index += 1) {
-        this.lines$[this.lines$.length - 1] += 1
-  
-        if ('\r\n'.includes(code[index])) this.lines$.push(0)
-      }
+        for (let index = 0; index < code.length; index += 1) {
+            this.lines$[this.lines$.length - 1] += 1
+    
+            if ('\r\n'.includes(code[index])) this.lines$.push(0)
+        }
     }
   
     toRowAndColumn(characterIndex: number): { row: number, column: number} {
-      let currentLine = 0
-      let currentColumn = 0
-  
-      for (let index = 0; index < characterIndex; index += 1) {
-        if (currentColumn < this.lines$[currentLine] - 1) currentColumn += 1
-        else {
-          currentColumn = 0
-          currentLine += 1
+        let currentLine = 0
+        let currentColumn = 0
+    
+        for (let index = 0; index < characterIndex; index += 1) {
+            if (currentColumn < this.lines$[currentLine] - 1) currentColumn += 1
+            else {
+            currentColumn = 0
+            currentLine += 1
+            }
         }
-      }
   
-      return { row: currentLine + 1, column: currentColumn + 1 }
+        return { row: currentLine + 1, column: currentColumn + 1 }
     }
 }
 
@@ -131,14 +134,12 @@ export function formatParser(result: ParserResult, map: EditorMap): HTMLSpanElem
         case ParserResultType.InitialStateAlreadyExists:
             span.appendChild(document.createTextNode('Error: There should only be one initial state declared'))
             return span
-        case ParserResultType.StateIdAlreadyExists:
-            span.appendChild(document.createTextNode('Error: Cannot have more than one state with the same name '))
-            span.appendChild(createStringSpan(result.value))
-            return span
-        case ParserResultType.StateIdMustNotBeEmpty:
+        case ParserResultType.IdAlreadyInUse:
             span.appendChild(document.createTextNode('Error in '))
             span.appendChild(formatRowAndColumn(row, column))
-            span.appendChild(document.createTextNode(': State id must have a name'))
+            span.appendChild(document.createTextNode(': Symbol id '))
+            span.appendChild(createIdentifierSpan(result.value))
+            span.appendChild(document.createTextNode(' already in use'))
             return span
         case ParserResultType.CharacterCaseAlreadyExistsWithinState:
             span.appendChild(document.createTextNode('Error in '))
@@ -151,9 +152,27 @@ export function formatParser(result: ParserResult, map: EditorMap): HTMLSpanElem
             span.appendChild(document.createTextNode('Error: There must be one initial state'))
             return span
         case ParserResultType.StateIdDoesNotExist:
-            span.appendChild(document.createTextNode('Error: State '))
-            span.appendChild(createStringSpan(result.value))
+            span.appendChild(document.createTextNode('Error in '))
+            span.appendChild(formatRowAndColumn(row, column))
+            span.appendChild(document.createTextNode(': State '))
+            span.appendChild(createIdentifierSpan(result.value))
             span.appendChild(document.createTextNode(' does not exist'))
+            return span
+        case ParserResultType.CouldNotFindConstant:
+            span.appendChild(document.createTextNode('Error in '))
+            span.appendChild(formatRowAndColumn(row, column))
+            span.appendChild(document.createTextNode(': Could not find constant '))
+            span.appendChild(createIdentifierSpan(result.value))
+            return span
+        case ParserResultType.ExpectedConstantIdentifier:
+            span.appendChild(document.createTextNode('Error in '))
+            span.appendChild(formatRowAndColumn(row, column))
+            span.appendChild(document.createTextNode(': Expected constant identifier'))
+            return span
+        case ParserResultType.ExpectedConstantValue:
+            span.appendChild(document.createTextNode('Error in '))
+            span.appendChild(formatRowAndColumn(row, column))
+            span.appendChild(document.createTextNode(': Expected constant value'))
             return span
         default:
             span.classList.add('error')
@@ -202,6 +221,13 @@ export function formatLexer(token: Token, map: EditorMap): HTMLSpanElement {
             span.textContent = 'Something very wrong has happened'
             return span
     }
+}
+
+function createIdentifierSpan(value: string): HTMLSpanElement {
+    const span = document.createElement('span')
+    span.style.color = 'skyblue'
+    span.textContent = value
+    return span
 }
 
 function createCharacterSpan(value: string): HTMLSpanElement {

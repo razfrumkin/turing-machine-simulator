@@ -9,10 +9,10 @@ export function tapeString(word: string): string {
 
 export type TMA = {
     initialStateId: string
-    states: {[key: string]: TMAState}
+    states: { [key: string]: TMAState }
 }
 
-export type TMAState = {[key: string]: TMACase}
+export type TMAState = { [key: string]: TMACase }
 
 export type TMACase = {
     replacement: string
