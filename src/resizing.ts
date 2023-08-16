@@ -2,7 +2,7 @@ const resizers = document.querySelectorAll<HTMLDivElement>('.resizer')
 
 let currentResizer: HTMLDivElement | null = null
 
-const RESIZER_THICKNESS: number = 20
+const RESIZER_THICKNESS: number = 25
 document.documentElement.style.setProperty('--resizer-thickness', `${RESIZER_THICKNESS}px`)
 
 resizers.forEach(resizer => {
