@@ -1,25 +1,24 @@
-initial state "q0" {
-    '0', '0', R -> "q1"
-    ' ', '$', R -> "q2"
-}
- 
-state "q1" {
-    '0', '0', R -> "q0"
-    ' ', '$', R -> "q3"
+define target '0'
+define output '$'
+
+initial state even {
+	target, target, R -> odd
+	' ', output, R -> done_even
 }
 
-state "q2" {
-    ' ', 'E', R -> "q4"
+state odd {
+	target, target, R -> even
+	' ', output, R -> done_odd
 }
 
-state "q3" {
-    ' ', 'O', R -> "q4"
+state done_even {
+	' ', 'E', R -> done
 }
 
-state "q4" {
-    ' ', '$', R -> "q5"
+state done_odd {
+	' ', 'O', R -> done
 }
 
-state "q5" {
-
+state done {
+	' ', output, L -> self
 }
