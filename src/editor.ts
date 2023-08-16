@@ -1,8 +1,10 @@
-import { Lexer, Parser, SymbolTable, SymbolType, Token, TokenType } from './compiler'
+import { Lexer, Parser, SymbolDataType, SymbolTable, SymbolType, Token, TokenType } from './compiler'
 
+const editor = document.getElementsByClassName('editor')[0] as HTMLElement
 const lineNumbers = document.getElementById('line-numbers') as HTMLDivElement
+const backdrop = document.getElementById('backdrop') as HTMLDivElement
 const code = document.getElementById('code') as HTMLTextAreaElement
-const layer = document.getElementById('layer') as HTMLDivElement
+const preview = document.getElementById('preview') as HTMLDivElement
 
 const MINIMUM_FONT_SIZE: number = 12
 const MAXIMUM_FONT_SIZE: number = 36
@@ -34,9 +36,10 @@ zoomOutButton.addEventListener('click', () => {
 
 function updateEditorFontSize() {
     const size = `${fontSize.toString()}px`
+    backdrop.style.fontSize = size
     code.style.fontSize = size
-    layer.style.fontSize = size
     lineNumbers.style.fontSize = size
+    preview.style.fontSize = size
 }
 
 code.addEventListener('input', () => {
@@ -79,66 +82,120 @@ function updateEditor() {
     highlight(tokens, symbols)
 }
 
+type Highlight = {
+    start: number
+    end: number
+    styleClass: string
+    hovered: HTMLSpanElement | null
+}
+
 function highlight(tokens: Token[], symbols: SymbolTable) {
-    layer.textContent = ''
+    backdrop.textContent = ''
     let currentPosition = 0
+
+    let hoverables: { highlight: Highlight, target: HTMLSpanElement }[] = []
 
     tokens.forEach(token => {
         if (token.type === TokenType.EndOfFile || token.type === TokenType.Error) return
 
-        const [start, end, styleClass, hovered] = tokenHighlight(token, symbols)
+        const highlight = tokenHighlight(token, symbols)
 
-        const before = code.value.substring(currentPosition, start)
-        layer.appendChild(document.createTextNode(before))
+        const before = code.value.substring(currentPosition, highlight.start)
+        backdrop.appendChild(document.createTextNode(before))
 
-        const highlight = code.value.substring(start, end)
+        const highlightString = code.value.substring(highlight.start, highlight.end)
         const span = document.createElement('span')
-        span.textContent = highlight
-        span.classList.add(styleClass)
-        if (hovered) {
-            span.addEventListener('mouseover', event => {
+        span.textContent = highlightString
+        span.classList.add(highlight.styleClass)
 
-            })
+        backdrop.appendChild(span)
+        if (highlight.hovered !== null) hoverables.push({ highlight: highlight, target: span })
 
-            span.addEventListener('mouseleave', () => {
-
-            })
-        }
-
-        layer.appendChild(span)
-
-        currentPosition = end
+        currentPosition = highlight.end
     })
 
     const after = code.value.substring(currentPosition)
-    layer.appendChild(document.createTextNode(after))
+    backdrop.appendChild(document.createTextNode(after))
+
+    code.onmousemove = event => {
+        const parentRectangle = (event.target as HTMLElement).getBoundingClientRect()
+        const x = event.clientX
+        const y = event.clientY
+
+        while (preview.firstChild) preview.removeChild(preview.firstChild)
+
+        let found = false
+        hoverables.forEach(hoverable => {
+            const boundary = hoverable.target!.getBoundingClientRect()
+            const insideX = x >= boundary.left && x <= boundary.right
+            const insideY = y >= boundary.top && y <= boundary.bottom
+            if (insideX && insideY) {
+                preview.appendChild(hoverable.highlight.hovered!)
+                const previewX = boundary.left - parentRectangle.left;
+                let previewY = boundary.top - boundary.height * 2 - parentRectangle.top;
+                if (previewY <= parentRectangle.top) previewY = boundary.bottom - parentRectangle.top
+
+                preview.style.transform = `translateX(${previewX}px) translateY(${previewY}px)`
+                preview.style.display = 'inline-block'
+                preview.classList.add('active')
+                found = true
+                return
+            }
+        })
+
+        if (!found) {
+            preview.style.display = 'none'
+        }
+    }
 }
 
-function tokenHighlight(token: Token, symbols: SymbolTable): [number, number, string, HTMLSpanElement?] {
+function tokenHighlight(token: Token, symbols: SymbolTable): Highlight {
     switch (token.type) {
         case TokenType.Comment:
-            return [token.position - 1, token.position + token.length + 1, 'comment']
+            return { start: token.position - 1, end: token.position + token.length + 1, styleClass: 'comment', hovered: null }
         case TokenType.Character:
-            return [token.position - 1, token.position + token.length + 1, 'character']
+            return { start: token.position - 1, end: token.position + token.length + 1, styleClass: 'character', hovered: null }
         case TokenType.String:
-            return [token.position - 1, token.position + token.length + 1, 'string']
+            return { start: token.position - 1, end: token.position + token.length + 1, styleClass: 'string', hovered: null }
         case TokenType.Identifier:
             if (token.value in symbols) {
-                if (symbols[token.value].type === SymbolType.State) return [token.position, token.position + token.length, 'state-id']
-                return [token.position, token.position + token.length, 'constant']
+                if (symbols[token.value].type === SymbolType.State) return { start: token.position, end: token.position + token.length, styleClass: 'state-id', hovered: null }
+
+                const span = document.createElement('span')
+                const define = document.createElement('span')
+                define.classList.add('keyword')
+                define.textContent = 'define'
+                span.appendChild(define)
+                span.appendChild(document.createTextNode(' '))
+                const id = document.createElement('span')
+                id.classList.add('constant')
+                id.textContent = token.value
+                span.appendChild(id)
+                span.appendChild(document.createTextNode(' '))
+                const constant = document.createElement('span')
+                const data = symbols[token.value].data
+                if (data.type === SymbolDataType.Character) {
+                    constant.classList.add('character')
+                    constant.textContent = `'${data.value}'`
+                } else {
+                    constant.classList.add('string')
+                    constant.textContent = `"${data.value}"`
+                }
+                span.appendChild(constant)
+                return { start: token.position, end: token.position + token.length, styleClass: 'constant', hovered: span }
             }
 
-            return [token.position, token.position + token.length, 'default']
+            return { start: token.position, end: token.position + token.length, styleClass: 'default', hovered: null }
         case TokenType.LeftCurlyBrace:
-            return [token.position, token.position + token.length, 'default']
+            return { start: token.position, end: token.position + token.length, styleClass: 'default', hovered: null }
         case TokenType.RightCurlyBrace:
-            return [token.position, token.position + token.length, 'default']
+            return { start: token.position, end: token.position + token.length, styleClass: 'default', hovered: null }
         case TokenType.Comma:
-            return [token.position, token.position + token.length, 'default']
+            return { start: token.position, end: token.position + token.length, styleClass: 'default', hovered: null }
         case TokenType.Arrow:
-            return [token.position, token.position + token.length, 'arrow']
+            return { start: token.position, end: token.position + token.length, styleClass: 'default', hovered: null }
         default:
-            return [token.position, token.position + token.length, 'keyword']
+            return { start: token.position, end: token.position + token.length, styleClass: 'keyword', hovered: null }
     }
 }
 
@@ -203,8 +260,8 @@ function updateLineNumbers() {
 }
 
 function syncScroll() {
-    layer.scrollTop = code.scrollTop
-    layer.scrollLeft = code.scrollLeft
+    backdrop.scrollTop = code.scrollTop
+    backdrop.scrollLeft = code.scrollLeft
     lineNumbers.scrollTop = code.scrollTop
 }
 

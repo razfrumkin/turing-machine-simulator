@@ -1,6 +1,6 @@
 define blank ' '
 
-# convert 0 into x and go to step 2 #
+# convert 0 into x and go to step q1 #
 # if symbol is c the convert it into blank, move right and go to q5 #
 initial state q0 {
 	'c', blank, R -> q5
