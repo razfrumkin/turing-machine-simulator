@@ -1,17 +1,18 @@
 :root {
-    --text-editor-background-color: rgb(31, 31, 31);
-    --text-editor-foreground-color: rgb(255, 255, 255);
-    --text-editor-line-numbers-color: rgb(102, 102, 102);
+    --text-editor-background-color: var(--theme-color);
+    --text-editor-foreground-color: rgb(172, 178, 190);
+    --text-editor-line-numbers-color: rgb(104, 111, 124);
 }
 
 .editor {
     position: relative;
     display: flex;
-    flex: 2;
+    flex: 1;
     font-family: 'Menlo', monospace;
     line-height: 1.5;
     overflow: hidden;
     box-sizing: border-box;
+    z-index: 1;
 }
 
 #line-numbers {
@@ -23,7 +24,7 @@
     flex: 0 0 auto;
     width: 40px;
     font-family: inherit;
-    overflow-y: hidden;
+    overflow: hidden;
 }
 
 #line-number span {
@@ -54,9 +55,9 @@
     white-space: pre;
     tab-size: 4;
     position: absolute;
-    z-index: -1;
     left: 0;
     top: 0;
+    z-index: -1;
 }
 
 #code {
@@ -102,33 +103,35 @@
 }
 
 span.comment {
-    color: rgb(133, 133, 133)
+    color: rgb(104, 111, 124);
+    font-style: italic;
 }
 
 span.keyword {
-    color: rgb(238, 39, 111);
+    color: rgb(110, 180, 192);
+    font-weight: bold;
 }
 
 span.character {
-    color: rgb(174, 129, 255);
+    color: rgb(223, 193, 132);
 }
 
 span.string {
-    color: rgb(166, 226, 46);
+    color: rgb(210, 114, 119);
 }
 
 span.arrow {
-    color: rgb(102, 217, 239);
+    color: rgb(187, 126, 215);
 }
 
 span.state-id {
-    color: rgb(196, 227, 134);
+    color: rgb(161, 193, 129);
 }
 
 span.constant {
-    color: rgb(54, 90, 97);
+    color: rgb(115, 174, 234);
 }
 
 span.default {
-    color: var(--text-editor-foreground-color);
+    color: rgb(172, 178, 190)
 }

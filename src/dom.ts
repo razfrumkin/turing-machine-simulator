@@ -77,16 +77,16 @@ resetButton.addEventListener('click', () => {
 })
 
 function compile(): boolean {
-    const map = new EditorMap(code.value)
-    const lexer = new Lexer(code.value)
-    const tokens = lexer.tokens()
-    const failure = tokens.some(token => token.type === TokenType.Error)
-
     clearOutput()
 
     const loadingSpan = document.createElement('span')
     loadingSpan.textContent = 'Compiling...\n'
     logOutput(loadingSpan)
+
+    const map = new EditorMap(code.value)
+    const lexer = new Lexer(code.value)
+    const tokens = lexer.tokens()
+    const failure = tokens.some(token => token.type === TokenType.Error)
 
     if (failure) {
         let errors = 0

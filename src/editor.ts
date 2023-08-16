@@ -1,6 +1,5 @@
 import { Lexer, Parser, SymbolDataType, SymbolTable, SymbolType, Token, TokenType } from './compiler'
 
-const editor = document.getElementsByClassName('editor')[0] as HTMLElement
 const lineNumbers = document.getElementById('line-numbers') as HTMLDivElement
 const backdrop = document.getElementById('backdrop') as HTMLDivElement
 const code = document.getElementById('code') as HTMLTextAreaElement
@@ -52,16 +51,6 @@ code.addEventListener('scroll', () => {
 
 code.addEventListener('keydown', event => {
     handleKeyPress(event)
-})
-
-code.addEventListener('paste', event => {
-    event.preventDefault()
-
-    const clipboardData = event.clipboardData
-    if (clipboardData) {
-        const pastedText = clipboardData.getData('text/plain')
-        document.execCommand('insertText', false, pastedText)
-    }
 })
 
 function updateEditor() {
@@ -193,7 +182,7 @@ function tokenHighlight(token: Token, symbols: SymbolTable): Highlight {
         case TokenType.Comma:
             return { start: token.position, end: token.position + token.length, styleClass: 'default', hovered: null }
         case TokenType.Arrow:
-            return { start: token.position, end: token.position + token.length, styleClass: 'default', hovered: null }
+            return { start: token.position, end: token.position + token.length, styleClass: 'arrow', hovered: null }
         default:
             return { start: token.position, end: token.position + token.length, styleClass: 'keyword', hovered: null }
     }

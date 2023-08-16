@@ -1,6 +1,7 @@
 :root {
     --cell-length: 75px;
     --cell-thickness: 2px;
+    --cell-color: white;
     --pointer-length: calc(var(--cell-length) * 1.75)
 }
 
@@ -26,7 +27,7 @@
   display: flex;
   flex-direction: row;
   border-radius: 3px;
-  border: var(--cell-thickness) solid var(--text-color);
+  border: var(--cell-thickness) solid var(--cell-color);
   height: var(--cell-length);
   position: absolute;
   margin-left: calc(calc(var(--cell-length) / -2) - var(--cell-thickness));
@@ -35,14 +36,14 @@
 
 .cell {
   font-family: 'Menlo';
-  color: var(--text-color);
+  color: var(--cell-color);
   font-size: 32px;
   width: var(--cell-length);
   height: var(--cell-length);
   display: flex;
   justify-content: center;
   align-items: center;
-  border-right: solid var(--text-color) var(--cell-thickness);
+  border-right: solid var(--cell-color) var(--cell-thickness);
   box-sizing: border-box;
 }
 

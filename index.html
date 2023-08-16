@@ -17,7 +17,8 @@
 </head>
 <body>
   <div class="container">
-    <div class="sidebar">
+    <div class="menu">
+      <span style="color: white">Turing Machine Simulator</span>
       <a href="https://github.com/razfrumkin/turing-machine-simulator" target="_blank">GitHub</a>
       <button id="compile-button">Compile</button>
       <button id="step-button" disabled>Step</button>
@@ -27,85 +28,57 @@
       <button id="zoom-in-button" aria-label="Minimize editor">Zoom In</button>
       <button id="zoom-out-button" aria-label="Maximize editor">Zoom Out</i></button>
     </div>
-    <div class="horizontal-section-container">
-      <!--
-      <section class="tutorial">
-        <span style="color: black; font-size: 72px; font-weight: bold;">Tutorial</span><br>
-        <p style="font-size: 32px;">
-          
-          This is a tutorial...
-        </p>
+    <div id="content" class="horizontal-section-container">
+      <section class="card">
+        <div class="card-options"></div>
+        <div class="tutorial">
+          <span style="font-size: 72px; font-weight: bold;">Tutorial</span><br>
+          <p style="font-size: 32px;">
+            
+            This is a tutorial...
+          </p>
+        </div>
       </section>
-      -->
-      </section>
-      <div class="vertical-section-container">
+      <div class="resizer"></div>
+      <div class="vertical-section-container" style="flex: 2">
         <div class="horizontal-section-container" style="flex: 3">
-          <section class="editor">
-            <div id="line-numbers"></div>
-            <div id="code-container">
-              <div id="backdrop" contenteditable="false"></div>
-              <textarea id="code" contenteditable spellcheck="false" aria-autocomplete="none"></textarea>
-              <div id="preview"></div>
+          <section class="card">
+            <div class="card-options"></div>
+            <div class="editor">
+              <div id="line-numbers"></div>
+              <div id="code-container">
+                <div id="backdrop" contenteditable="false"></div>
+                <textarea id="code" contenteditable spellcheck="false" aria-autocomplete="none"></textarea>
+                <div id="preview"></div>
+              </div>
             </div>
           </section>
           <div class="resizer"></div>
-          <section class="controls">
-            <div class="output">
-              <div id="console"></div>
-            </div>
-            <div class="options">
-              <input id="tape-input" class="text-field" type="text" placeholder="Tape input here...">
-              <span id="current-state"></span>
+          <section class="card">
+            <div class="card-options"></div>
+            <div class="controls">
+              <div class="output">
+                <div id="console"></div>
+              </div>
+              <div class="options">
+                <input id="tape-input" class="text-field" type="text" placeholder="Tape input here...">
+                <span id="current-state"></span>
+              </div>
             </div>
           </section>
         </div>
         <div class="resizer"></div>
-        <section class="machine">
-          <div id="tape-container" class="tape">
-            <div id="tape-cells" class="cells">
-  
+        <section class="card">
+          <div class="card-options"></div>
+          <div class="machine">
+            <div id="tape-container" class="tape">
+              <div id="tape-cells" class="cells"></div>
+              <div id="tape-pointer" class="pointer"></div>
             </div>
-            <div id="tape-pointer" class="pointer"></div>
           </div>
         </section>
       </div>
     </div>
-      <!--
-      <div class="upper">
-        <div class="heading-container">
-          <div class="heading">
-            <span class="header-text">Turing Machine Simulator by <span class="colored-header-text">Raz Frumkin</span> written in TypeScript</span>
-            <p>
-              Simulate a turing machine tap by writing code for the machine's states.
-            </p>
-            <span id="current-state"></span>
-          </div>
-        </div>
-      </div>
-      -->
-
-        <!--
-        <div class="editor-container">
-          <section class="options">
-            <button id="compile-button" class="primary-button">Compile</button>
-            <button id="run-button" class="primary-button" disabled>Run</button>
-            <button id="reset-button" class="primary-button">Reset</button>
-          </section>
-          <p id="output" class="output-success"></p>
-        </div>
-        -->
-
-      <!--
-      <div class="lower">
-        <input id="tape-input" class="text-field" type="text" placeholder="Tape input here...">
-        <div id="tape-container" class="tape">
-          <div id="tape-cells" class="cells">
-
-          </div>
-          <div id="tape-pointer" class="pointer"></div>
-        </div>
-      </div>
-      -->
   </div>
 </body>
 </html>

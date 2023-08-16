@@ -2,13 +2,16 @@ const resizers = document.querySelectorAll<HTMLDivElement>('.resizer')
 
 let currentResizer: HTMLDivElement | null = null
 
+const RESIZER_THICKNESS: number = 20
+document.documentElement.style.setProperty('--resizer-thickness', `${RESIZER_THICKNESS}px`)
+
 resizers.forEach(resizer => {
     const parent = resizer.parentElement!
     if (isHorizontal(parent)) {
-        resizer.style.width = '3px'
+        resizer.style.width = `${RESIZER_THICKNESS}px`
         resizer.style.cursor = 'ew-resize'
     } else {
-        resizer.style.height = '3px'
+        resizer.style.height = `${RESIZER_THICKNESS}px`
         resizer.style.cursor = 'ns-resize'
     }
 

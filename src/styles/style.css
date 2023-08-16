@@ -1,16 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
-
 :root {
-  /* https://realtimecolors.com/?colors=d8f5f9-031012-115f69-082c30-0e4b53 */
-  --text-color: #d8f5f9;
-  --background-color: #031012;
-  --primary-button-color: #115f69;
-  --secondary-button-color: #082c30;
-  --accent-color: #0e4b53;
+  --theme-color: rgb(41, 44, 51);
+  --theme-secondary-color: rgb(48, 51, 60);
+  --theme-secondary-darker-color: rgb(34, 37, 42);
+  --theme-secondary-lighter-color: rgb(57, 62, 73);
 
-  --text-font: 'Quicksand', sans-serif;
-
-  --resizer-background-color: black;
   --minimum-section-dimension: 200px;
 }
 
@@ -33,12 +26,19 @@ body {
 }
 
 .container {
-  margin: 0;
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   overflow: hidden;
+  background-color: var(--theme-secondary-darker-color);
+}
+
+#content {
+  margin: var(--resizer-thickness);
+  width: calc(100% - calc(var(--resizer-thickness) * 2));
+  height: calc(100% - calc(var(--resizer-thickness) * 2));
 }
 
 .horizontal-section-container {
@@ -64,34 +64,39 @@ body {
 }
 
 .resizer {
-  background-color: var(--resizer-background-color);
+  background-color: var(--theme-secondary-darker-color);
 }
 
-.common-section {
-  flex: 1;
-  overflow: auto;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 32px;
-  color: black;
-  font-weight: bold;
+.resizer:hover {
+  background-color: var(--theme-secondary-color);
 }
 
-.sidebar {
-  width: 80px;
-  background-color: var(--text-editor-background-color);
+.card {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  flex: 1;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.card-options {
+  height: 75px;
+  background-color: var(--theme-secondary-lighter-color);
+}
+
+.menu {
+  background-color: var(--theme-secondary-darker-color);
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  border: 3px solid black;
 }
 
 .spacer {
   flex-grow: 1;
 }
 
-.sidebar a, button {
+.menu span, a, button {
   padding: 10px;
   background-color: transparent;
   border: none;
@@ -99,17 +104,16 @@ body {
   cursor: pointer;
   color: rgb(122, 122, 122);
   font-size: 24px;
-  margin: 10px;
+  margin: 10px 20px 10px 20px;
 }
 
-.sidebar a:hover, button:hover {
+.menu a:hover, button:hover {
   color: white;
 }
 
 .primary-button {
   background-color: var(--primary-button-color);
   color: var(--text-color);
-  font-family: var(--text-font);
   font-size: 20px;
   width: 120px;
   height: 60px;
@@ -123,18 +127,15 @@ body {
 }
 
 .primary-button:disabled, button[disabled] {
-  border: 1px solid #999999;
-  background-color: #cccccc;
-  color: #666666;
+  color: #555555;
   cursor :default;
 }
 
 #current-state {
-  font-family: var(--text-font);
-  color: var(--text-color);
+  color: white;
   font-size: 35px;
 }
 
 .current-state-id {
-  color: var(--accent-color)
+  color: darksalmon;
 }
