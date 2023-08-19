@@ -116,10 +116,6 @@ span.character {
     color: rgb(223, 193, 132);
 }
 
-span.string {
-    color: rgb(210, 114, 119);
-}
-
 span.operator {
     color: rgb(187, 126, 215);
 }

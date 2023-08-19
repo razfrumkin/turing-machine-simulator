@@ -156,8 +156,6 @@ function tokenHighlight(token: Token, symbols: SymbolTable): Highlight {
             return { start: token.position - 1, end: token.position + token.length + 1, styleClass: 'comment', hovered: null }
         case TokenType.Character:
             return { start: token.position - 1, end: token.position + token.length + 1, styleClass: 'character', hovered: null }
-        case TokenType.String:
-            return { start: token.position - 1, end: token.position + token.length + 1, styleClass: 'string', hovered: null }
         case TokenType.Identifier:
             if (token.value in symbols) {
                 if (symbols[token.value].type === SymbolType.State) return { start: token.position, end: token.position + token.length, styleClass: 'state-id', hovered: null }
@@ -178,10 +176,7 @@ function tokenHighlight(token: Token, symbols: SymbolTable): Highlight {
                 if (data.type === SymbolDataType.Character) {
                     constant.classList.add('character')
                     constant.textContent = `'${data.value}'`
-                } else {
-                    constant.classList.add('string')
-                    constant.textContent = `"${data.value}"`
-                }
+                } // make an else statement in the future if a constant can contain non-character values
                 span.appendChild(constant)
                 return { start: token.position, end: token.position + token.length, styleClass: 'constant', hovered: span }
             }

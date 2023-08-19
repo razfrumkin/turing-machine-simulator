@@ -4,7 +4,6 @@ import { LexerResult, ParserResult, ParserResultType } from './diagnostics'
 export enum TokenType {
     Comment,
     Character,
-    String,
 
     Identifier,
 
@@ -124,25 +123,6 @@ export class Lexer {
         return { type: TokenType.Character, result: LexerResult.Success, value: character, position: this.position - 2, length: 1 }
     }
 
-    private makeString(): Token {
-        this.advance()
-
-        const start = this.position
-
-        let value = ''
-        while (this.position < this.code.length) {
-            if (this.current === '"') {
-                this.advance()
-                return { type: TokenType.String, result: LexerResult.Success, value: value, position: start, length: value.length }
-            }
-
-            value += this.current
-            this.advance()
-        }
-
-        return { type: TokenType.Error, result: LexerResult.ExpectedMatchingQuotations, value: '', position: this.position, length: value.length }
-    }
-
     private makeIdentifier(): Token {
         const start = this.position
 
@@ -201,7 +181,6 @@ export class Lexer {
             if (this.isSpace(this.current)) this.advance()
             else if (this.current === '#') tokens.push(this.makeComment())
             else if (this.current === '\'') tokens.push(this.makeCharacter())
-            else if (this.current === '"') tokens.push(this.makeString())
             else if (this.current === '_' || isAlphabetic(this.current)) tokens.push(this.makeIdentifier())
             else if (this.current === '{') tokens.push(this.makeLeftCurlyBrace())
             else if (this.current === '}') tokens.push(this.makeRightCurlyBrace())
@@ -250,10 +229,6 @@ export class Parser {
 
             if (this.current.type as TokenType === TokenType.Character)
                 return { type: SymbolType.Constant, identifier: identifier, data: { type: SymbolDataType.Character, value: this.current.value } }
-            
-            if (this.current.type as TokenType === TokenType.String)
-                return { type: SymbolType.Constant, identifier: identifier, data: { type: SymbolDataType.String, value: this.current.value } }
-
 
             return errorSymbol()
         }
@@ -273,7 +248,7 @@ export class Parser {
         if (this.current.type as TokenType !== TokenType.Identifier) return { type: ParserResultType.ExpectedConstantIdentifier, position: this.current.position, value: '' }
         this.advance()
 
-        if (this.current.type as TokenType === TokenType.Character || this.current.type as TokenType === TokenType.String)
+        if (this.current.type as TokenType === TokenType.Character)
             return { type: ParserResultType.Success, position: -1, value: '' }
 
         return { type: ParserResultType.ExpectedConstantValue, position: this.current.position, value: '' }
