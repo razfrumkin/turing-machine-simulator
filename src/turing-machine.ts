@@ -55,8 +55,12 @@ export class TuringMachine {
                 const turingCase = state[caseCharacter]
                 await this.tape$.executeCase(turingCase, onReplaced, onMoved)
 
+                if (!this.isRunning$) return
+
                 this.currentStateId$ = turingCase.targetStateId
-                await onSwitchedState(this.currentStateId$)
+                onSwitchedState(this.currentStateId$)
+
+                console.log(this.currentStateId$)
 
                 return
             }

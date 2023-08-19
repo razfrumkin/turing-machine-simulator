@@ -71,3 +71,14 @@
     font-size: 25px;
     color: white;
 }
+
+.card-options > a {
+    padding: 15px;
+    cursor: pointer;
+    color: rgb(122, 122, 122);
+    font-size: 25px;
+}
+  
+.card-options > a:hover {
+    color: white;
+}

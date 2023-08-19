@@ -69,9 +69,9 @@ resetButton.addEventListener('click', () => {
     if (machine === null) return
     stepButton.disabled = false
     runOrPauseButton.disabled = false
+    runOrPauseButton.innerText = 'Run'
 
     machine.stop()
-
     machine.reset(tapeInput.value.trim())
 
     onMachineSwitchedState(automata.initialStateId)
@@ -174,11 +174,12 @@ function pushCellElement() {
     tapeCellsElement.appendChild(cell)
 }
 
-function movePointerToCell(index: number) {
+function movePointerToCell(index: number, animate: boolean = true) {
     const cell = tapeCellsElement.children[index]
     
     const length = cell.getBoundingClientRect().width
 
+    tapeCellsElement.style.transition = animate ? 'var(--cells-transition)' : 'none'
     tapeCellsElement.style.transform = `translateX(${index * -length}px)`
 }
 
@@ -200,19 +201,19 @@ async function onMachineReplaced(tape: Tape, caseCharacter: string, replacement:
 }
 
 async function onMachineMoved(tape: Tape, direction: TMADirection) {
+    await timeout(MOVE_MILLISECONDS)
+    if (!tape.isMachineRunning) return
+
     if (direction === TMADirection.Left) {
-        if (tapeCellsElement.children.length < tape.cells.length) {
-            movePointerToCell(tape.pointer + 1)
+        if (tapeCellsElement.children.length - 1 < tape.cells.length) {
             insertCellElement()
+            movePointerToCell(tape.pointer + 1, false)
         }
     } else {
-            if (tapeCellsElement.children.length < tape.cells.length) {
+        if (tapeCellsElement.children.length - 1 < tape.cells.length) {
             pushCellElement()
         }
     }
-
-    await timeout(MOVE_MILLISECONDS)
-    if (!tape.isMachineRunning) return
 
     movePointerToCell(tape.pointer)
 

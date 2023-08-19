@@ -2,7 +2,9 @@
     --cell-length: 75px;
     --cell-thickness: 2px;
     --cell-color: white;
-    --pointer-length: calc(var(--cell-length) * 1.75)
+    --pointer-length: calc(var(--cell-length) * 1.75);
+
+    --cells-transition: transform 0.25s ease-in-out;
 }
 
 .machine {
@@ -31,7 +33,7 @@
   height: var(--cell-length);
   position: absolute;
   margin-left: calc(calc(var(--cell-length) / -2) - var(--cell-thickness));
-  transition: transform 0.25s ease-in-out;
+  transition: var(--cells-transition);
 }
 
 .cell {
