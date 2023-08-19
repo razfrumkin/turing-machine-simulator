@@ -10,6 +10,8 @@ export function clearOutput() {
 export function logOutput(span: HTMLSpanElement, logTime: boolean = true) {
     if (logTime) consoleOutput.appendChild(document.createTextNode(`${timeString(new Date())} `))
     consoleOutput.appendChild(span)
+    
+    consoleOutput.parentElement!.scrollTop = consoleOutput.parentElement!.scrollHeight
 }
 
 function timeString(time: Date): string {

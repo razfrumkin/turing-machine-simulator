@@ -19,10 +19,10 @@
     display: flex;
     background-color: transparent;
     padding: 10px;
-    overflow-y: auto;
     flex: 1;
     box-sizing: border-box;
     white-space: pre;
+    overflow: auto;
 }
 
 #console {
