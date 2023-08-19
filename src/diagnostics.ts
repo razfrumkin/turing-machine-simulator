@@ -231,22 +231,15 @@ export function formatLexer(token: Token, map: EditorMap): HTMLSpanElement {
 
 export function createIdentifierSpan(value: string): HTMLSpanElement {
     const span = document.createElement('span')
-    span.style.color = 'skyblue'
+    span.className = 'console-identifier'
     span.textContent = value
     return span
 }
 
 export function createCharacterSpan(value: string): HTMLSpanElement {
     const span = document.createElement('span')
-    span.style.color = 'orange'
+    span.className = 'console-character'
     span.textContent = `'${value}'`
-    return span
-}
-
-export function createStringSpan(value: string): HTMLSpanElement {
-    const span = document.createElement('span')
-    span.style.color = 'aqua'
-    span.textContent = `"${value}"`
     return span
 }
 
@@ -254,12 +247,12 @@ function formatRowAndColumn(row: number, column: number, capital: boolean = fals
     const span = document.createElement('span')
     span.appendChild(document.createTextNode(`${capital ? 'L' : 'l'}ine `))
     const rowSpan = document.createElement('span')
-    rowSpan.style.color = 'gray'
+    rowSpan.className = 'console-row'
     rowSpan.textContent = row.toString()
     span.appendChild(rowSpan)
     span.appendChild(document.createTextNode(', column '))
     const columnSpan = document.createElement('span')
-    columnSpan.style.color = 'gray'
+    columnSpan.className = 'console-column'
     columnSpan.textContent = column.toString()
     span.appendChild(columnSpan)
     return span

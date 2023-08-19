@@ -58,7 +58,7 @@
   height: var(--pointer-length);
   background-color: transparent;
   position: absolute;
-  border: 5px solid royalblue;
+  border: 5px solid #a5be00;
   border-radius: 10px;
   margin-left: calc(var(--pointer-length) / -2);
   box-sizing: border-box;

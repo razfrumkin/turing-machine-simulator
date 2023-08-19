@@ -7,10 +7,10 @@ const code = document.getElementById('code') as HTMLTextAreaElement
 const compileButton = document.getElementById('compile-button') as HTMLButtonElement
 const stepButton = document.getElementById('step-button') as HTMLButtonElement
 const runOrPauseButton = document.getElementById('run-or-pause-button') as HTMLButtonElement
+const runOrPauseButtonImage = runOrPauseButton.firstElementChild as HTMLImageElement
 const resetButton = document.getElementById('reset-button') as HTMLButtonElement
 
 const tapeInput = document.getElementById('tape-input') as HTMLInputElement
-const currentState = document.getElementById('current-state') as HTMLSpanElement
 const copyTapeButton = document.getElementById('copy-tape-button') as HTMLButtonElement
 
 const tapeCellsElement = document.getElementById('tape-cells') as HTMLDivElement
@@ -52,13 +52,15 @@ runOrPauseButton.addEventListener('click', () => {
     if (!machine!.isPaused) {
         machine!.pause()
         stepButton.disabled = false
-        runOrPauseButton.innerText = 'Run'
+        runOrPauseButtonImage.src = '../res/icons/play.svg'
+        runOrPauseButton.title = 'Run'
         return
     }
 
     tapeInput.disabled = true
     stepButton.disabled = true
-    runOrPauseButton.innerText = 'Pause'
+    runOrPauseButtonImage.src = '../res/icons/pause.svg'
+    runOrPauseButton.title = 'Pause'
 
     machine!.run(onMachineReplaced, onMachineMoved, onMachineSwitchedState, onMachineFinished)
 })
@@ -69,7 +71,8 @@ resetButton.addEventListener('click', () => {
     if (machine === null) return
     stepButton.disabled = false
     runOrPauseButton.disabled = false
-    runOrPauseButton.innerText = 'Run'
+    runOrPauseButtonImage.src = '../res/icons/play.svg'
+    runOrPauseButton.title = 'Run'
 
     machine.stop()
     machine.reset(tapeInput.value.trim())
@@ -225,13 +228,6 @@ async function onMachineMoved(tape: Tape, direction: TMADirection) {
 }
 
 function onMachineSwitchedState(stateId: string) {
-    while (currentState.firstChild) currentState.removeChild(currentState.firstChild)
-    currentState.appendChild(document.createTextNode('Current state: '))
-    const stateSpan = document.createElement('span')
-    stateSpan.style.color = 'crimson'
-    stateSpan.textContent = stateId
-    currentState.appendChild(stateSpan)
-
     if (!machine?.isRunning) return
 
     const span = document.createElement('span')
@@ -246,7 +242,8 @@ function onMachineFinished(tape: Tape) {
     tapeInput.disabled = false
     stepButton.disabled = true
     runOrPauseButton.disabled = true
-    runOrPauseButton.innerText = 'Run'
+    runOrPauseButtonImage.src = '../res/icons/play.svg'
+    runOrPauseButton.title = 'Run'
     copyTapeButton.disabled = false
     cellsString = tape.cells
 }

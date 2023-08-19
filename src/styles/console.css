@@ -45,3 +45,19 @@ span.warning {
 span.error {
     color: var(--console-error);
 }
+
+span.console-row {
+    color: lightgray;
+}
+
+span.console-column {
+    color: lightgray;
+}
+
+span.console-identifier {
+    color: mediumpurple;
+}
+
+span.console-character {
+    color: dodgerblue;
+}

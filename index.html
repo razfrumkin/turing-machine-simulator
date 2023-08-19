@@ -25,10 +25,13 @@
     <div id="content" class="horizontal-section-container">
       <section class="card">
         <div class="card-options">
-          <a href="https://github.com/razfrumkin/turing-machine-simulator" target="_blank">GitHub</a>
+          <div class="spacer"></div>
+          <a href="https://github.com/razfrumkin/turing-machine-simulator" class="svg-button" title="This Repository" target="_blank">
+            <img src="res/icons/github.svg">
+          </a>
         </div>
         <div class="tutorial">
-          <span style="font-size: 72px; font-weight: bold;">Tutorial</span><br>
+          <span style="font-size: 72px; font-weight: bold">Tutorial</span><br>
           <p style="font-size: 32px;">
             
             This is a tutorial...
@@ -43,7 +46,7 @@
               <button id="compile-button" class="special">Compile Code</button>
               <div class="spacer"></div>
               <div class="dropdown">
-                <select id="theme-selection" style="background-color: teal">
+                <select id="theme-selection">
                   <option selected value="one-monokai">One Monokai</option>
                   <option value="monokai">Monokai</option>
                   <option value="one-dark">One Dark</option>
@@ -52,8 +55,12 @@
                 </select>
                 <span class="dropdown-arrow">&#x25BC;</span>
               </div>
-              <button id="zoom-in-button">Zoom In</button>
-              <button id="zoom-out-button">Zoom Out</button>
+              <button id="zoom-in-button" class="svg-button" title="Zoom In">
+                <img src="res/icons/zoom-in.svg">
+              </button>
+              <button id="zoom-out-button" class="svg-button" title="Zoom Out">
+                <img src="res/icons/zoom-out.svg">
+              </button>
             </div>
             <div id="editor" class="one-monokai">
               <div id="line-numbers"></div>
@@ -79,11 +86,16 @@
         <div class="resizer"></div>
         <section class="card">
           <div class="card-options">
-            <button id="step-button" disabled>Step</button>
-            <button id="run-or-pause-button" disabled>Run</button>
-            <button id="reset-button" disabled>Reset</button>
+            <button id="step-button" class="svg-button" title="Step" disabled>
+              <img src="res/icons/step.svg">
+            </button>
+            <button id="run-or-pause-button" class="svg-button" title="Run" disabled>
+              <img src="res/icons/play.svg">
+            </button>
+            <button id="reset-button" class="svg-button" title="Reset" disabled>
+              <img src="res/icons/reset.svg">
+            </button>
             <input id="tape-input" type="text" placeholder="Tape input here...">
-            <span id="current-state"></span>
             <div class="spacer"></div>
             <button id="copy-tape-button" class="special">Copy To Clipboard</button>
           </div>

@@ -13,9 +13,10 @@
     background-color: var(--theme-secondary-lighter-color);
     overflow: hidden;
     align-items: center;
+    font-family: var(--main-font);
 }
 
-.card-options > button {
+.card-options > button, .card-options > a {
     border: none;
     cursor: pointer;
     background-color: transparent;
@@ -25,10 +26,11 @@
     align-items: center;
     padding: 0 20px;
     font-size: 15px;
+    font-family: inherit;
 }
 
-.card-options > button:hover {
-    background-color: rgb(70, 88, 139);
+.card-options > button:hover, .card-options > a:hover {
+    background-color: #4c5f6b;
 }
 
 .card-options > button:disabled, .card-options > button:disabled:hover {
@@ -37,12 +39,23 @@
     background-color: transparent;
 }
 
+.card-options > .svg-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-options > .svg-button > img {
+    height: 55%;
+    font-weight: bold;
+}
+
 .card-options > button.special {
-    background-color: royalblue;
+    background-color: #427aa1;
 }
 
 .card-options > button.special:hover {
-    background-color: rgb(70, 88, 139);
+    background-color: #05668d;
 }
 
 .card-options > button.special:disabled, .card-options > button.special:disabled:hover {
@@ -58,8 +71,9 @@
     color: white;
     width: 300px;
     height: 100%;
-    font-size: 15px;
+    font-size: 20px;
     padding: 0 15px;
+    font-family: inherit;
 }
 
 .card-options > input:disabled {
@@ -70,23 +84,14 @@
     padding: 0 15px;
     font-size: 25px;
     color: white;
-}
-
-.card-options > a {
-    padding: 15px;
-    cursor: pointer;
-    color: rgb(122, 122, 122);
-    font-size: 25px;
-}
-  
-.card-options > a:hover {
-    color: white;
+    font-family: inherit;
 }
 
 .card-options > .dropdown {
     display: inline-block;
     position: relative;
     text-align: center;
+    height: 100%;
 }
 
 .card-options > .dropdown > select {
@@ -101,6 +106,8 @@
     color: white;
     height: 100%;
     cursor: pointer;
+    font-family: inherit;
+    background-color: #679436;
 }
 
 .card-options > .dropdown > select::after {

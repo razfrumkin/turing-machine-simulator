@@ -30,13 +30,15 @@ themeSelection.addEventListener('change', () => {
 })
 
 zoomInButton.addEventListener('click', () => {
-    if (fontSize >= MAXIMUM_FONT_SIZE) return
+    if (fontSize >= MAXIMUM_FONT_SIZE - 1) zoomInButton.disabled = true
+    zoomOutButton.disabled = false
     fontSize += 1
     updateEditorFontSize()
 })
 
 zoomOutButton.addEventListener('click', () => {
-    if (fontSize <= MINIMUM_FONT_SIZE) return
+    if (fontSize <= MINIMUM_FONT_SIZE + 1) zoomOutButton.disabled = true
+    zoomInButton.disabled = false
     fontSize -= 1
     updateEditorFontSize()
 })
