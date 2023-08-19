@@ -71,19 +71,6 @@ body {
   background-color: var(--theme-secondary-color);
 }
 
-.card {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  box-sizing: border-box;
-  position: relative;
-}
-
-.card-options {
-  height: 75px;
-  background-color: var(--theme-secondary-lighter-color);
-}
-
 .menu {
   background-color: var(--theme-secondary-darker-color);
   display: flex;
@@ -96,7 +83,7 @@ body {
   flex-grow: 1;
 }
 
-.menu span, a, button {
+.menu > span, .menu > a, .menu > button {
   padding: 10px;
   background-color: transparent;
   border: none;
@@ -107,35 +94,6 @@ body {
   margin: 10px 20px 10px 20px;
 }
 
-.menu a:hover, button:hover {
+.menu > a:hover, .menu > button:hover {
   color: white;
-}
-
-.primary-button {
-  background-color: var(--primary-button-color);
-  color: var(--text-color);
-  font-size: 20px;
-  width: 120px;
-  height: 60px;
-  border: none;
-  border-radius: 5%;
-}
-
-.primary-button:hover {
-  background-color: var(--accent-color);
-  cursor: pointer;
-}
-
-.primary-button:disabled, button[disabled] {
-  color: #555555;
-  cursor :default;
-}
-
-#current-state {
-  color: white;
-  font-size: 35px;
-}
-
-.current-state-id {
-  color: darksalmon;
 }

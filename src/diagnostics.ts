@@ -5,7 +5,7 @@ export enum ParserResultType {
 
     ExpectedKeywordState,
     ExpectedCaseCharacter,
-    ExpectedCommaBetweenCaseCharacterAndReplacementCharacter,
+    ExpectedSlashBetweenCaseCharacterAndReplacementCharacter,
     ExpectedReplacementCharacter,
     ExpectedCommaBetweenReplacementCharacterAndTapeDirection,
     ExpectedDirection,
@@ -92,10 +92,10 @@ export function formatParser(result: ParserResult, map: EditorMap): HTMLSpanElem
             span.appendChild(formatRowAndColumn(row, column))
             span.appendChild(document.createTextNode(': Expected case character or \'}\''))
             return span
-        case ParserResultType.ExpectedCommaBetweenCaseCharacterAndReplacementCharacter:
+        case ParserResultType.ExpectedSlashBetweenCaseCharacterAndReplacementCharacter:
             span.appendChild(document.createTextNode('Error in '))
             span.appendChild(formatRowAndColumn(row, column))
-            span.appendChild(document.createTextNode(': Expected comma between case character and replacement character'))
+            span.appendChild(document.createTextNode(': Expected slash between case character and replacement character'))
             return span
         case ParserResultType.ExpectedReplacementCharacter:
             span.appendChild(document.createTextNode('Error in '))
@@ -229,21 +229,21 @@ export function formatLexer(token: Token, map: EditorMap): HTMLSpanElement {
     }
 }
 
-function createIdentifierSpan(value: string): HTMLSpanElement {
+export function createIdentifierSpan(value: string): HTMLSpanElement {
     const span = document.createElement('span')
     span.style.color = 'skyblue'
     span.textContent = value
     return span
 }
 
-function createCharacterSpan(value: string): HTMLSpanElement {
+export function createCharacterSpan(value: string): HTMLSpanElement {
     const span = document.createElement('span')
     span.style.color = 'orange'
     span.textContent = `'${value}'`
     return span
 }
 
-function createStringSpan(value: string): HTMLSpanElement {
+export function createStringSpan(value: string): HTMLSpanElement {
     const span = document.createElement('span')
     span.style.color = 'aqua'
     span.textContent = `"${value}"`

@@ -1,0 +1,73 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    box-sizing: border-box;
+    position: relative;
+}
+  
+.card-options {
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    background-color: var(--theme-secondary-lighter-color);
+    overflow: hidden;
+    align-items: center;
+}
+
+.card-options > button {
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    color: white;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 15px;
+}
+
+.card-options > button:hover {
+    background-color: rgb(70, 88, 139);
+}
+
+.card-options > button:disabled, .card-options > button:disabled:hover {
+    color: #666666;
+    cursor: not-allowed;
+    background-color: transparent;
+}
+
+.card-options > button.special {
+    background-color: royalblue;
+}
+
+.card-options > button.special:hover {
+    background-color: rgb(70, 88, 139);
+}
+
+.card-options > button.special:disabled, .card-options > button.special:disabled:hover {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;  
+}
+
+.card-options > input {
+    border: none;
+    outline: none;
+    background-color: var(--theme-secondary-color);
+    color: white;
+    width: 300px;
+    height: 100%;
+    font-size: 15px;
+    padding: 0 15px;
+}
+
+.card-options > input:disabled {
+    cursor: not-allowed;
+}
+
+.card-options > span {
+    padding: 0 15px;
+    font-size: 25px;
+    color: white;
+}

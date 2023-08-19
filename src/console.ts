@@ -1,4 +1,7 @@
 const consoleOutput = document.getElementById('console') as HTMLDivElement
+const clearConsoleButton = document.getElementById('clear-console-button') as HTMLButtonElement
+
+clearConsoleButton.addEventListener('click', clearOutput)
 
 export function clearOutput() {
     consoleOutput.textContent = ''
@@ -7,7 +10,6 @@ export function clearOutput() {
 export function logOutput(span: HTMLSpanElement, logTime: boolean = true) {
     if (logTime) consoleOutput.appendChild(document.createTextNode(`${timeString(new Date())} `))
     consoleOutput.appendChild(span)
-    consoleOutput.scrollTop = consoleOutput.scrollHeight
 }
 
 function timeString(time: Date): string {

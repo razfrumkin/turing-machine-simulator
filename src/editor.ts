@@ -179,10 +179,12 @@ function tokenHighlight(token: Token, symbols: SymbolTable): Highlight {
             return { start: token.position, end: token.position + token.length, styleClass: 'default', hovered: null }
         case TokenType.RightCurlyBrace:
             return { start: token.position, end: token.position + token.length, styleClass: 'default', hovered: null }
+        case TokenType.Slash:
+            return { start: token.position, end: token.position + token.length, styleClass: 'operator', hovered: null }
         case TokenType.Comma:
             return { start: token.position, end: token.position + token.length, styleClass: 'default', hovered: null }
         case TokenType.Arrow:
-            return { start: token.position, end: token.position + token.length, styleClass: 'arrow', hovered: null }
+            return { start: token.position, end: token.position + token.length, styleClass: 'operator', hovered: null }
         default:
             return { start: token.position, end: token.position + token.length, styleClass: 'keyword', hovered: null }
     }

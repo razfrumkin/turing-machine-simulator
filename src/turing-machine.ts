@@ -48,7 +48,7 @@ export class TuringMachine {
         this.currentStateId$ = this.automata$.initialStateId
     }
 
-    private async executeState(stateId: string, onReplaced: (tape: Tape) => void, onMoved: (tape: Tape, direction: TMADirection) => void, onSwitchedState: (stateId: string) => void) {
+    private async executeState(stateId: string, onReplaced: (tape: Tape, caseCharacter: string, replacement: string) => void, onMoved: (tape: Tape, direction: TMADirection) => void, onSwitchedState: (stateId: string) => void) {
         const state = this.automata$.states[stateId]
         for (const caseCharacter in state) {
             if (this.tape$.current === caseCharacter) {
@@ -65,7 +65,7 @@ export class TuringMachine {
         this.isRunning$ = false
     }
 
-    async run(onReplaced: (tape: Tape) => void, onMoved: (tape: Tape, direction: TMADirection) => void, onSwitchedState: (stateId: string) => void, onFinished: (tape: Tape) => void) {
+    async run(onReplaced: (tape: Tape, caseCharacter: string, replacement: string) => void, onMoved: (tape: Tape, direction: TMADirection) => void, onSwitchedState: (stateId: string) => void, onFinished: (tape: Tape) => void) {
         this.isRunning$ = true
         this.isPaused$ = false
 
@@ -74,7 +74,7 @@ export class TuringMachine {
         }
     }
 
-    async step(onReplaced: (tape: Tape) => void, onMoved: (tape: Tape, direction: TMADirection) => void, onSwitchedState: (stateId: string) => void, onFinished: (tape: Tape) => void) {
+    async step(onReplaced: (tape: Tape, caseCharacter: string, replacement: string) => void, onMoved: (tape: Tape, direction: TMADirection) => void, onSwitchedState: (stateId: string) => void, onFinished: (tape: Tape) => void) {
         this.isRunning$ = true
         this.isPaused$ = false
 
@@ -136,9 +136,10 @@ export class Tape {
         this.cells$ = setCharacterAt(this.cells$, this.pointer$, character)
     }
 
-    async executeCase(turingCase: TMACase, onReplaced: (tape: Tape) => void, onMoved: (tape: Tape, direction: TMADirection) => void) {
+    async executeCase(turingCase: TMACase, onReplaced: (tape: Tape, caseCharacter: string, replacement: string) => void, onMoved: (tape: Tape, direction: TMADirection) => void) {
+        const caseCharacter = this.current
         this.current = turingCase.replacement
-        await onReplaced(this)
+        await onReplaced(this, caseCharacter, this.current)
 
         turingCase.direction == TMADirection.Left ? this.moveLeft() : this.moveRight()
         await onMoved(this, turingCase.direction)

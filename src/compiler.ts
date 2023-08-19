@@ -17,6 +17,7 @@ export enum TokenType {
 
     LeftCurlyBrace,
     RightCurlyBrace,
+    Slash,
     Comma,
     Arrow,
 
@@ -172,6 +173,11 @@ export class Lexer {
         return { type: TokenType.RightCurlyBrace, result: LexerResult.Success, value: '', position: this.position - 1, length: 1 }
     }
 
+    private makeSlash(): Token {
+        this.advance()
+        return { type: TokenType.Slash, result: LexerResult.Success, value: '', position: this.position - 1, length: 1 }
+    }
+
     private makeComma(): Token {
         this.advance()
         return { type: TokenType.Comma, result: LexerResult.Success, value: '', position: this.position - 1, length: 1 }
@@ -199,6 +205,7 @@ export class Lexer {
             else if (this.current === '_' || isAlphabetic(this.current)) tokens.push(this.makeIdentifier())
             else if (this.current === '{') tokens.push(this.makeLeftCurlyBrace())
             else if (this.current === '}') tokens.push(this.makeRightCurlyBrace())
+            else if (this.current === '/') tokens.push(this.makeSlash())
             else if (this.current === ',') tokens.push(this.makeComma())
             else if (this.current === '-') tokens.push(this.makeArrow())
             else {
@@ -286,7 +293,7 @@ export class Parser {
 
         this.advance()
 
-        if (this.current.type as TokenType !== TokenType.Comma) return { type: ParserResultType.ExpectedCommaBetweenCaseCharacterAndReplacementCharacter, position: this.current.position, value: '' }
+        if (this.current.type as TokenType !== TokenType.Slash) return { type: ParserResultType.ExpectedSlashBetweenCaseCharacterAndReplacementCharacter, position: this.current.position, value: '' }
         this.advance()
 
         let replacement: string
@@ -380,12 +387,12 @@ export class Parser {
         return this.parseState(automata, symbols)
     }
 
-    parse(): { automata: TMA, symbols: SymbolTable, output: ParserResult[] } {
+    parse(): { automata: TMA, symbols: SymbolTable, output: ParserResult[][] } {
         let automata: TMA = { initialStateId: '', states: {} }
 
-        if (this.tokens.length === 0) return { automata: automata, symbols: {}, output: [{ type: ParserResultType.NoInitialStateExists, position: -1, value: '' }]}
+        if (this.tokens.length === 0) return { automata: automata, symbols: {}, output: [[{ type: ParserResultType.NoInitialStateExists, position: -1, value: '' }]] }
 
-        const output: ParserResult[] = []
+        const output: ParserResult[][] = []
 
         let symbols: SymbolTable = {}
 
@@ -393,7 +400,7 @@ export class Parser {
         while (this.current.type !== TokenType.EndOfFile) {
             const result = this.parseTopLevelDeclaration()
             if (result.type !== SymbolType.Error)
-                if (result.identifier in symbols) output.push({ type: ParserResultType.IdAlreadyInUse, position: this.current.position, value: result.identifier })
+                if (result.identifier in symbols) output.push([{ type: ParserResultType.IdAlreadyInUse, position: this.current.position, value: result.identifier }])
                 else symbols[result.identifier] = result
             this.advance()
         }
@@ -404,12 +411,12 @@ export class Parser {
         while (this.current.type !== TokenType.EndOfFile) {
             const result = this.parseTopLevelDefinition(automata, symbols)
             if (result.length > 0) {
-                output.push(...result)
+                output.push(result)
             }
             this.advance()
         }
 
-        if (automata.initialStateId === '') output.push({ type: ParserResultType.NoInitialStateExists, position: -1, value: '' })
+        if (automata.initialStateId === '') output.push([{ type: ParserResultType.NoInitialStateExists, position: -1, value: '' }])
         
         return { automata: automata, symbols: symbols, output: output }
     }

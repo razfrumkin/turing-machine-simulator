@@ -1,5 +1,5 @@
 import { Lexer, Parser, TokenType } from './compiler'
-import { EditorMap, formatLexer, formatParser } from './diagnostics'
+import { createCharacterSpan, createIdentifierSpan, EditorMap, formatLexer, formatParser } from './diagnostics'
 import { clearOutput, logOutput } from './console'
 import { TMA, TuringMachine, Tape, TMADirection, tapeString, BLANK_CELLS_PER_SIDE } from './turing-machine'
 
@@ -11,6 +11,7 @@ const resetButton = document.getElementById('reset-button') as HTMLButtonElement
 
 const tapeInput = document.getElementById('tape-input') as HTMLInputElement
 const currentState = document.getElementById('current-state') as HTMLSpanElement
+const copyTapeButton = document.getElementById('copy-tape-button') as HTMLButtonElement
 
 const tapeCellsElement = document.getElementById('tape-cells') as HTMLDivElement
 
@@ -110,7 +111,7 @@ function compile(): boolean {
         let outputs = 0
         for (let index = 0; index < output.length; index += 1) {
             if (outputs > MAX_OUTPUTS) break
-            const message = output[index]
+            const message = output[index][0]
             const span = formatParser(message, map)
             span.appendChild(document.createTextNode('\n'))
             logOutput(span)
@@ -121,7 +122,7 @@ function compile(): boolean {
 
     const span = document.createElement('span')
     span.classList.add('success')
-    span.textContent = 'Compiled successfully'
+    span.textContent = 'Compiled successfully\n'
 
     logOutput(span)
 
@@ -134,7 +135,13 @@ tapeInput.addEventListener('input', () => {
     resetButton.dispatchEvent(new Event('click'))
 })
 
+copyTapeButton.addEventListener('click', () => {
+    navigator.clipboard.writeText(cellsString.trim())
+})
+
 export function prepareTapeElement(value: string) {
+    copyTapeButton.disabled = true
+
     while (tapeCellsElement.firstChild)
         tapeCellsElement.removeChild(tapeCellsElement.firstChild)
 
@@ -175,13 +182,21 @@ function movePointerToCell(index: number) {
     tapeCellsElement.style.transform = `translateX(${index * -length}px)`
 }
 
-async function onMachineReplaced(tape: Tape) {
+async function onMachineReplaced(tape: Tape, caseCharacter: string, replacement: string) {
     const cell = tapeCellsElement.children[tape.pointer]
 
     await timeout(REPLACE_MILLISECONDS)
     if (!tape.isMachineRunning) return
 
     cell.textContent = tape.current
+
+    const span = document.createElement('span')
+    span.appendChild(document.createTextNode('Scanning '))
+    span.appendChild(createCharacterSpan(caseCharacter))
+    span.appendChild(document.createTextNode(', replacing with '))
+    span.appendChild(createCharacterSpan(replacement))
+    span.appendChild(document.createTextNode('\n'))
+    logOutput(span)
 }
 
 async function onMachineMoved(tape: Tape, direction: TMADirection) {
@@ -200,17 +215,39 @@ async function onMachineMoved(tape: Tape, direction: TMADirection) {
     if (!tape.isMachineRunning) return
 
     movePointerToCell(tape.pointer)
+
+    const span = document.createElement('span')
+    span.appendChild(document.createTextNode('Moving to the '))
+    span.appendChild(createIdentifierSpan(direction === TMADirection.Left ? 'left' : 'right'))
+    span.appendChild(document.createTextNode(' direction\n'))
+    logOutput(span)
 }
 
 function onMachineSwitchedState(stateId: string) {
-    currentState.innerHTML = `Current state: <span class="current-state-id">${stateId}</span>`
+    while (currentState.firstChild) currentState.removeChild(currentState.firstChild)
+    currentState.appendChild(document.createTextNode('Current state: '))
+    const stateSpan = document.createElement('span')
+    stateSpan.style.color = 'crimson'
+    stateSpan.textContent = stateId
+    currentState.appendChild(stateSpan)
+
+    if (!machine?.isRunning) return
+
+    const span = document.createElement('span')
+    span.appendChild(document.createTextNode('Going to '))
+    span.appendChild(createIdentifierSpan(stateId))
+    span.appendChild(document.createTextNode('\n'))
+    logOutput(span)
 }
 
+let cellsString: string = ''
 function onMachineFinished(tape: Tape) {
     tapeInput.disabled = false
     stepButton.disabled = true
     runOrPauseButton.disabled = true
     runOrPauseButton.innerText = 'Run'
+    copyTapeButton.disabled = false
+    cellsString = tape.cells
 }
 
 function timeout(milliseconds: number): Promise<unknown> {

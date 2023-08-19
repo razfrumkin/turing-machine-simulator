@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Turing Machine</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="src/styles/card.css">  
   <link rel="stylesheet" href="src/styles/tutorial.css">
   <link rel="stylesheet" href="src/styles/editor.css">
   <link rel="stylesheet" href="src/styles/console.css">
@@ -20,17 +20,12 @@
     <div class="menu">
       <span style="color: white">Turing Machine Simulator</span>
       <a href="https://github.com/razfrumkin/turing-machine-simulator" target="_blank">GitHub</a>
-      <button id="compile-button">Compile</button>
-      <button id="step-button" disabled>Step</button>
-      <button id="run-or-pause-button" disabled>Run</button>
-      <button id="reset-button" disabled>Reset</button>
-      <div class="spacer"></div>
-      <button id="zoom-in-button" aria-label="Minimize editor">Zoom In</button>
-      <button id="zoom-out-button" aria-label="Maximize editor">Zoom Out</i></button>
     </div>
     <div id="content" class="horizontal-section-container">
       <section class="card">
-        <div class="card-options"></div>
+        <div class="card-options">
+
+        </div>
         <div class="tutorial">
           <span style="font-size: 72px; font-weight: bold;">Tutorial</span><br>
           <p style="font-size: 32px;">
@@ -43,7 +38,12 @@
       <div class="vertical-section-container" style="flex: 2">
         <div class="horizontal-section-container" style="flex: 3">
           <section class="card">
-            <div class="card-options"></div>
+            <div class="card-options">
+              <button id="compile-button" class="special-button">Compile Code</button>
+              <div class="spacer"></div>
+              <button id="zoom-in-button">Zoom In</button>
+              <button id="zoom-out-button">Zoom Out</button>
+            </div>
             <div class="editor">
               <div id="line-numbers"></div>
               <div id="code-container">
@@ -55,21 +55,27 @@
           </section>
           <div class="resizer"></div>
           <section class="card">
-            <div class="card-options"></div>
+            <div class="card-options">
+              <button id="clear-console-button" class="special">Clear Console</button>
+            </div>
             <div class="controls">
               <div class="output">
                 <div id="console"></div>
-              </div>
-              <div class="options">
-                <input id="tape-input" class="text-field" type="text" placeholder="Tape input here...">
-                <span id="current-state"></span>
               </div>
             </div>
           </section>
         </div>
         <div class="resizer"></div>
         <section class="card">
-          <div class="card-options"></div>
+          <div class="card-options">
+            <button id="step-button" disabled>Step</button>
+            <button id="run-or-pause-button" disabled>Run</button>
+            <button id="reset-button" disabled>Reset</button>
+            <input id="tape-input" type="text" placeholder="Tape input here...">
+            <span id="current-state"></span>
+            <div class="spacer"></div>
+            <button id="copy-tape-button" class="special">Copy To Clipboard</button>
+          </div>
           <div class="machine">
             <div id="tape-container" class="tape">
               <div id="tape-cells" class="cells"></div>
