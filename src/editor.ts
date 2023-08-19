@@ -5,6 +5,8 @@ const backdrop = document.getElementById('backdrop') as HTMLDivElement
 const code = document.getElementById('code') as HTMLTextAreaElement
 const preview = document.getElementById('preview') as HTMLDivElement
 
+let highlightPromise: Promise<void> | null = null
+
 const MINIMUM_FONT_SIZE: number = 12
 const MAXIMUM_FONT_SIZE: number = 36
 const DEFAULT_FONT_SIZE: number = 22
@@ -54,10 +56,20 @@ code.addEventListener('keydown', event => {
 })
 
 function updateEditor() {
+    updateLineNumbers()
+
+    code.style.color = 'var(--text-editor-foreground-color)'
+    highlightPromise = highlightEditor()
+
+    highlightPromise.then(() => {
+        code.style.color = 'transparent'
+        highlightPromise = null
+    })
+}
+
+async function highlightEditor() {
     const lexer = new Lexer(code.value)
     const tokens = lexer.tokens()
-
-    updateLineNumbers()
 
     const failure = tokens.some(token => token.type === TokenType.Error)
     if (failure) {
