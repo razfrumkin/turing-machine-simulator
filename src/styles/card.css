@@ -82,3 +82,42 @@
 .card-options > a:hover {
     color: white;
 }
+
+.card-options > .dropdown {
+    display: inline-block;
+    position: relative;
+    text-align: center;
+}
+
+.card-options > .dropdown > select {
+    padding: 15px;
+    padding-right: 35px;
+    font-size: 15px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    outline: none;
+    border: none;
+    color: white;
+    height: 100%;
+    cursor: pointer;
+}
+
+.card-options > .dropdown > select::after {
+    content: '\25BC';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.card-options > .dropdown > .dropdown-arrow {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 12px;
+    color: white;
+}

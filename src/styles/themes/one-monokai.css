@@ -1,0 +1,41 @@
+.one-monokai #line-numbers {
+    color: rgb(104, 111, 124);
+}
+
+.one-monokai #code {
+    caret-color: rgb(172, 178, 190);
+}
+
+.one-monokai #backdrop {
+    color: rgb(172, 178, 190);
+}
+
+.one-monokai span.comment {
+    color: rgb(104, 111, 124);
+    font-style: italic;
+}
+
+.one-monokai span.keyword {
+    color: rgb(110, 180, 192);
+    font-weight: bold;
+}
+
+.one-monokai span.character {
+    color: rgb(223, 193, 132);
+}
+
+.one-monokai span.operator {
+    color: rgb(187, 126, 215);
+}
+
+.one-monokai span.state-id {
+    color: rgb(161, 193, 129);
+}
+
+.one-monokai span.constant {
+    color: rgb(115, 174, 234);
+}
+
+.one-monokai span.default {
+    color: rgb(172, 178, 190);
+}

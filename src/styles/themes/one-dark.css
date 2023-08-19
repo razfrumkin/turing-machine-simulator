@@ -1,0 +1,40 @@
+.one-dark #line-numbers {
+    color: rgb(128, 132, 141);
+}
+
+.one-dark #code {
+    caret-color: rgb(172, 178, 190);
+}
+
+.one-dark #backdrop {
+    color: rgb(172, 178, 190);
+}
+
+.one-dark span.comment {
+    color: rgb(128, 132, 141);
+    font-style: italic;
+}
+
+.one-dark span.keyword {
+    color: rgb(187, 126, 215);
+}
+
+.one-dark span.character {
+    color: rgb(153, 183, 124);
+}
+
+.one-dark span.operator {
+    color: rgb(110, 180, 192);
+}
+
+.one-dark span.state-id {
+    color: rgb(115, 174, 234);
+}
+
+.one-dark span.constant {
+    color: rgb(223, 193, 132);
+}
+
+.one-dark span.default {
+    color: rgb(172, 178, 190);
+}

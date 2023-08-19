@@ -1,10 +1,8 @@
 :root {
     --text-editor-background-color: var(--theme-color);
-    --text-editor-foreground-color: rgb(172, 178, 190);
-    --text-editor-line-numbers-color: rgb(104, 111, 124);
 }
 
-.editor {
+#editor {
     position: relative;
     display: flex;
     flex: 1;
@@ -18,7 +16,6 @@
 #line-numbers {
     padding: 10px;
     background-color: var(--text-editor-background-color);
-    color: var(--text-editor-line-numbers-color);
     text-align: right;
     user-select: none;
     flex: 0 0 auto;
@@ -51,7 +48,6 @@
     outline: none;
     border: none;
     background-color: var(--text-editor-background-color);
-    color: var(--text-editor-foreground-color);
     white-space: pre;
     tab-size: 4;
     position: absolute;
@@ -73,7 +69,6 @@
     border: none;
     background-color: transparent;
     color: transparent;
-    caret-color: var(--text-editor-foreground-color);
     white-space: pre;
 }
 
@@ -100,34 +95,4 @@
     100% {
         opacity: 1;
     }
-}
-
-span.comment {
-    color: rgb(104, 111, 124);
-    font-style: italic;
-}
-
-span.keyword {
-    color: rgb(110, 180, 192);
-    font-weight: bold;
-}
-
-span.character {
-    color: rgb(223, 193, 132);
-}
-
-span.operator {
-    color: rgb(187, 126, 215);
-}
-
-span.state-id {
-    color: rgb(161, 193, 129);
-}
-
-span.constant {
-    color: rgb(115, 174, 234);
-}
-
-span.default {
-    color: var(--text-editor-foreground-color);
 }

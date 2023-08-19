@@ -1,5 +1,9 @@
 import { Lexer, Parser, SymbolDataType, SymbolTable, SymbolType, Token, TokenType } from './compiler'
 
+const editor = document.getElementById('editor') as HTMLDivElement
+const themeSelection = document.getElementById('theme-selection') as HTMLSelectElement
+const zoomInButton = document.getElementById('zoom-in-button') as HTMLButtonElement
+const zoomOutButton = document.getElementById('zoom-out-button') as HTMLButtonElement
 const lineNumbers = document.getElementById('line-numbers') as HTMLDivElement
 const backdrop = document.getElementById('backdrop') as HTMLDivElement
 const code = document.getElementById('code') as HTMLTextAreaElement
@@ -20,8 +24,10 @@ const matchings: { [key: string]: string } = {
     '#': '#'
 }
 
-const zoomInButton = document.getElementById('zoom-in-button') as HTMLButtonElement
-const zoomOutButton = document.getElementById('zoom-out-button') as HTMLButtonElement
+themeSelection.addEventListener('change', () => {
+    const style = themeSelection.value
+    editor.className = style
+})
 
 zoomInButton.addEventListener('click', () => {
     if (fontSize >= MAXIMUM_FONT_SIZE) return

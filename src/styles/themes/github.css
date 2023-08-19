@@ -1,0 +1,40 @@
+.github #line-numbers {
+    color: rgb(97, 105, 112);
+}
+
+.github #code {
+    caret-color: rgb(225, 228, 232);
+}
+
+.github #backdrop {
+    color: rgb(225, 228, 232);
+}
+
+.github span.comment {
+    color: rgb(97, 105, 112);
+    font-style: italic;
+}
+
+.github span.keyword {
+    color: rgb(233, 125, 133);
+}
+
+.github span.character {
+    color: rgb(155, 189, 231);
+}
+
+.github span.operator {
+    color: rgb(216, 117, 126);
+}
+
+.github span.state-id {
+    color: rgb(173, 149, 234);
+}
+
+.github span.constant {
+    color: rgb(134, 184, 249);
+}
+
+.github span.default {
+    color: rgb(225, 228, 232);
+}

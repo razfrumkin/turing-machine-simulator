@@ -5,6 +5,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Turing Machine</title>
+  <link rel="stylesheet" href="src/styles/themes/one-monokai.css">
+  <link rel="stylesheet" href="src/styles/themes/monokai.css">
+  <link rel="stylesheet" href="src/styles/themes/one-dark.css">
+  <link rel="stylesheet" href="src/styles/themes/github.css">
+  <link rel="stylesheet" href="src/styles/themes/ayu-mirage.css">
   <link rel="stylesheet" href="src/styles/card.css">  
   <link rel="stylesheet" href="src/styles/tutorial.css">
   <link rel="stylesheet" href="src/styles/editor.css">
@@ -37,10 +42,20 @@
             <div class="card-options">
               <button id="compile-button" class="special">Compile Code</button>
               <div class="spacer"></div>
+              <div class="dropdown">
+                <select id="theme-selection" style="background-color: teal">
+                  <option selected value="one-monokai">One Monokai</option>
+                  <option value="monokai">Monokai</option>
+                  <option value="one-dark">One Dark</option>
+                  <option value="github">GitHub</option>
+                  <option value="ayu-mirage">Ayu Mirage</option>
+                </select>
+                <span class="dropdown-arrow">&#x25BC;</span>
+              </div>
               <button id="zoom-in-button">Zoom In</button>
               <button id="zoom-out-button">Zoom Out</button>
             </div>
-            <div class="editor">
+            <div id="editor" class="one-monokai">
               <div id="line-numbers"></div>
               <div id="code-container">
                 <div id="backdrop" contenteditable="false"></div>
