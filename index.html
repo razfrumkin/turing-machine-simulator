@@ -22,91 +22,77 @@
 </head>
 <body>
   <div class="container">
-    <div id="content" class="horizontal-section-container">
-      <section class="card">
-        <div class="card-options">
-          <div class="spacer"></div>
-          <a href="https://github.com/razfrumkin/turing-machine-simulator" class="svg-button" title="This Repository" target="_blank">
-            <img src="res/icons/github.svg">
-          </a>
-        </div>
-        <div class="tutorial">
-          <span style="font-size: 72px; font-weight: bold">Tutorial</span><br>
-          <p style="font-size: 32px;">
-            
-            This is a tutorial...
-          </p>
-        </div>
-      </section>
-      <div class="resizer"></div>
-      <div class="vertical-section-container" style="flex: 2">
-        <div class="horizontal-section-container" style="flex: 3">
-          <section class="card">
-            <div class="card-options">
-              <button id="compile-button" class="special">Compile Code</button>
-              <div class="spacer"></div>
-              <div class="dropdown">
-                <select id="theme-selection">
-                  <option selected value="one-monokai">One Monokai</option>
-                  <option value="monokai">Monokai</option>
-                  <option value="one-dark">One Dark</option>
-                  <option value="github">GitHub</option>
-                  <option value="ayu-mirage">Ayu Mirage</option>
-                </select>
-                <span class="dropdown-arrow">&#x25BC;</span>
-              </div>
-              <button id="zoom-in-button" class="svg-button" title="Zoom In">
-                <img src="res/icons/zoom-in.svg">
-              </button>
-              <button id="zoom-out-button" class="svg-button" title="Zoom Out">
-                <img src="res/icons/zoom-out.svg">
-              </button>
+    <div id="content" class="vertical-section-container" style="flex: 2">
+      <div class="horizontal-section-container" style="flex: 3">
+        <section class="card">
+          <div class="card-options">
+            <button id="compile-button" class="special">Compile Code</button>
+            <div class="spacer"></div>
+            <div class="dropdown">
+              <select id="theme-selection">
+                <option selected value="one-monokai">One Monokai</option>
+                <option value="monokai">Monokai</option>
+                <option value="one-dark">One Dark</option>
+                <option value="github">GitHub</option>
+                <option value="ayu-mirage">Ayu Mirage</option>
+              </select>
+              <span class="dropdown-arrow">&#x25BC;</span>
             </div>
-            <div id="editor" class="one-monokai">
-              <div id="line-numbers"></div>
-              <div id="code-container">
-                <div id="backdrop" contenteditable="false"></div>
-                <textarea id="code" contenteditable spellcheck="false" aria-autocomplete="none"></textarea>
-                <div id="preview"></div>
-              </div>
+            <button id="zoom-in-button" class="svg-button" title="Zoom In">
+              <img src="res/icons/zoom-in.svg">
+            </button>
+            <button id="zoom-out-button" class="svg-button" title="Zoom Out">
+              <img src="res/icons/zoom-out.svg">
+            </button>
+          </div>
+          <div id="editor" class="one-monokai">
+            <div id="line-numbers"></div>
+            <div id="code-container">
+              <div id="backdrop" contenteditable="false"></div>
+              <textarea id="code" contenteditable spellcheck="false" aria-autocomplete="none"></textarea>
+              <div id="preview"></div>
             </div>
-          </section>
-          <div class="resizer"></div>
-          <section class="card">
-            <div class="card-options">
-              <button id="clear-console-button" class="special">Clear Console</button>
-            </div>
-            <div class="controls">
-              <div class="output">
-                <div id="console"></div>
-              </div>
-            </div>
-          </section>
-        </div>
+          </div>
+        </section>
         <div class="resizer"></div>
         <section class="card">
           <div class="card-options">
-            <button id="step-button" class="svg-button" title="Step" disabled>
-              <img src="res/icons/step.svg">
-            </button>
-            <button id="run-or-pause-button" class="svg-button" title="Run" disabled>
-              <img src="res/icons/play.svg">
-            </button>
-            <button id="reset-button" class="svg-button" title="Reset" disabled>
-              <img src="res/icons/reset.svg">
-            </button>
-            <input id="tape-input" type="text" placeholder="Tape input here...">
+            <button id="clear-console-button" class="special">Clear Console</button>
             <div class="spacer"></div>
-            <button id="copy-tape-button" class="special">Copy To Clipboard</button>
+            <a href="https://github.com/razfrumkin/turing-machine-simulator" class="svg-button" title="This Repository" target="_blank">
+              <img src="res/icons/github.svg">
+            </a>
           </div>
-          <div class="machine">
-            <div id="tape-container" class="tape">
-              <div id="tape-cells" class="cells"></div>
-              <div id="tape-pointer" class="pointer"></div>
+          <div class="controls">
+            <div class="output">
+              <div id="console"></div>
             </div>
           </div>
         </section>
       </div>
+      <div class="resizer"></div>
+      <section class="card">
+        <div class="card-options">
+          <button id="step-button" class="svg-button" title="Step" disabled>
+            <img src="res/icons/step.svg">
+          </button>
+          <button id="run-or-pause-button" class="svg-button" title="Run" disabled>
+            <img src="res/icons/play.svg">
+          </button>
+          <button id="reset-button" class="svg-button" title="Reset" disabled>
+            <img src="res/icons/reset.svg">
+          </button>
+          <input id="tape-input" type="text" placeholder="Tape input here...">
+          <div class="spacer"></div>
+          <button id="copy-tape-button" class="special">Copy To Clipboard</button>
+        </div>
+        <div class="machine">
+          <div id="tape-container" class="tape">
+            <div id="tape-cells" class="cells"></div>
+            <div id="tape-pointer" class="pointer"></div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </body>
