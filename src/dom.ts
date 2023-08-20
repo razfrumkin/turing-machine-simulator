@@ -143,8 +143,6 @@ copyTapeButton.addEventListener('click', () => {
 })
 
 export function prepareTapeElement(value: string) {
-    copyTapeButton.disabled = true
-
     while (tapeCellsElement.firstChild)
         tapeCellsElement.removeChild(tapeCellsElement.firstChild)
 
@@ -244,7 +242,6 @@ function onMachineFinished(tape: Tape) {
     runOrPauseButton.disabled = true
     runOrPauseButtonImage.src = '../res/icons/play.svg'
     runOrPauseButton.title = 'Run'
-    copyTapeButton.disabled = false
     cellsString = tape.cells
 }
 
