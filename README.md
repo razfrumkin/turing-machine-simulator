@@ -38,7 +38,7 @@ The following dependencies will be installed:
 ### Running the Website
 
 Execute the following command to start the Vite development server:
-```
+```bash
 npm run dev
 # or
 yarn dev
@@ -47,7 +47,7 @@ yarn dev
 ### Building the Website
 
 Execute the following command to build the website:
-```
+```bash
 npm run build
 # or
 yarn build
