@@ -55,9 +55,9 @@ span.console-column {
 }
 
 span.console-identifier {
-    color: mediumpurple;
+    color: #679436;
 }
 
 span.console-character {
-    color: dodgerblue;
+    color: #427aa1;
 }

@@ -60,8 +60,6 @@ export class TuringMachine {
                 this.currentStateId$ = turingCase.targetStateId
                 onSwitchedState(this.currentStateId$)
 
-                console.log(this.currentStateId$)
-
                 return
             }
         }
