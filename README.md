@@ -19,12 +19,12 @@ In order to run the website, ensure you have installed the following requirement
 git clone https://github.com/razfrumkin/turing-machine-simulator.git
 ```
 
-2. **Navigate to the directory**: Change your working directory to the cloned repository:
+2. **Navigate to the Directory**: Change your working directory to the cloned repository:
 ```bash
 cd turing-machine-simulator
 ```
 
-3. **Install dependencies**: Use npm or yarn to install the project's dependencies:
+3. **Install Dependencies**: Use npm or yarn to install the project's dependencies:
 ```bash
 npm install
 # or
