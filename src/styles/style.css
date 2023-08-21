@@ -77,3 +77,13 @@ body {
 .spacer {
   flex-grow: 1;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--theme-secondary-lighter-color);
+  border-radius: 5px;
+}
