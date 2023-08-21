@@ -1,4 +1,5 @@
 import { Lexer, Parser, SymbolDataType, SymbolTable, SymbolType, Token, TokenType } from './compiler'
+import { setTutorialStyle } from './tutorial'
 
 const editor = document.getElementById('editor') as HTMLDivElement
 const themeSelection = document.getElementById('theme-selection') as HTMLSelectElement
@@ -27,6 +28,7 @@ const matchings: { [key: string]: string } = {
 themeSelection.addEventListener('change', () => {
     const style = themeSelection.value
     editor.className = style
+    setTutorialStyle(style)
 })
 
 zoomInButton.addEventListener('click', () => {

@@ -17,82 +17,226 @@
   <link rel="stylesheet" href="src/styles/style.css">
   <link rel="stylesheet" href="src/styles/machine.css">
   <script type="module" src="src/resizing.ts" defer></script>
+  <script type="module" src="src/tutorial.ts" defer></script>
   <script type="module" src="src/editor.ts" defer></script>
   <script type="module" src="src/main.ts" defer></script>
 </head>
 <body>
   <div class="container">
-    <div id="content" class="vertical-section-container" style="flex: 2">
-      <div class="horizontal-section-container" style="flex: 3">
-        <section class="card">
-          <div class="card-options">
-            <button id="compile-button" class="special">Compile Code</button>
-            <div class="spacer"></div>
-            <div class="dropdown">
-              <select id="theme-selection">
-                <option selected value="one-monokai">One Monokai</option>
-                <option value="monokai">Monokai</option>
-                <option value="one-dark">One Dark</option>
-                <option value="github">GitHub</option>
-                <option value="ayu-mirage">Ayu Mirage</option>
-              </select>
-              <span class="dropdown-arrow">&#x25BC;</span>
-            </div>
-            <button id="zoom-in-button" class="svg-button" title="Zoom In">
-              <img src="res/icons/zoom-in.svg">
-            </button>
-            <button id="zoom-out-button" class="svg-button" title="Zoom Out">
-              <img src="res/icons/zoom-out.svg">
-            </button>
+    <div id="content" class="horizontal-section-container">
+      <section class="card">
+        <div class="card-options">
+          <span>Tutorial</span>
+          <div class="spacer"></div>
+          <a href="https://github.com/razfrumkin/turing-machine-simulator" class="svg-button" title="This Repository" target="_blank">
+            <img src="res/icons/github.svg">
+          </a>
+        </div>
+        <div id="tutorial" class="one-monokai">
+          <p>The script is composed of of various states, each of which defines the behavior of the Turing machine when it encounters specific symbols on the tape.</p>
+
+          <div class="code-container">
+<pre><code><span class="keyword">state</span> &lt;state-id&gt; <span class="default">{</span>
+    &lt;case&gt; <span class="operator">/</span> &lt;replacement&gt;<span class="default">,</span> &lt;direction&gt; <span class="operator">-></span> &lt;target-state-id&gt;
+<span class="default">}</span></code></pre>
+            <button>Copy</button>
           </div>
-          <div id="editor" class="one-monokai">
-            <div id="line-numbers"></div>
-            <div id="code-container">
-              <div id="backdrop" contenteditable="false"></div>
-              <textarea id="code" contenteditable spellcheck="false" aria-autocomplete="none"></textarea>
-              <div id="preview"></div>
-            </div>
+
+          <ul>
+            <li><span class="code-segment">state-id</span>: The name of the state.</li>
+            <li><span class="code-segment">case</span>: The scanned character.</li>
+            <li><span class="code-segment">replacement</span>: The inserted character.</li>
+            <li><span class="code-segment">direction</span>: The direction in which the head moves. (<span class="code-segment">L</span> and <span class="code-segment">R</span> for left and right respectively)</li>
+            <li><span class="code-segment">target-state-id</span>: The name of the state to enter.</li>
+          </ul>
+
+          <p>In this example, whenever the machine encounters <span class="code-segment">1</span> it replaces it with <code>0</code>, moves the head one unit to the right, and switches to state <span class="code-segment">q2</span>.</p>
+          
+          <div class="code-container">
+<pre><code><span class="keyword">state</span> <span class="state-id">q1</span> <span class="default">{</span>
+    <span class="character">'1'</span> <span class="operator">/</span> <span class="character">'0'</span><span class="default">,</span> <span class="keyword">R</span> <span class="operator">-&gt;</span> <span class="state-id">q2</span>
+<span class="default">}</span></code></pre>
+            <button>Copy</button>
           </div>
-        </section>
+
+          <p>Every turing machine has exactly one start state. To define such a state we insert the <span class="code-segment">initial</span> keyword before defining the state as such:</p>
+          
+          <div class="code-container">
+<pre><code><span class="keyword">initial</span> <span class="keyword">state</span> <span class="state-id">q0</span> <span class="default">{</span>
+    <span class="character">'0'</span> <span class="operator">/</span> <span class="character">'1'</span><span class="default">,</span> <span class="keyword">R</span> <span class="operator">-&gt;</span> <span class="state-id">q0</span>
+<span class="default">}</span></code></pre>
+            <button>Copy</button>
+          </div>
+
+          <p>In the previous example, we can see that the state and the target state match. In that case we can use the <span class="code-segment">self</span> keyword as such:</p>
+        
+          <div class="code-container">
+<pre><code><span class="keyword">initial</span> <span class="keyword">state</span> <span class="state-id">q0</span> <span class="default">{</span>
+    <span class="character">'0'</span> <span class="operator">/</span> <span class="character">'1'</span><span class="default">,</span> <span class="keyword">R</span> <span class="operator">-&gt;</span> <span class="keyword">self</span>
+<span class="default">}</span></code></pre>
+            <button>Copy</button>
+          </div>
+
+          <p>We can also define constants that represent characters instead of writing a character expression every time. We can define constants only at the top level.</p>
+        
+          <div class="code-container">
+<pre><code><span class="keyword">define</span> &lt;name&gt; &lt;character&gt;</code></pre>
+            <button>Copy</button>
+          </div>
+
+          <ul>
+            <li><span class="code-segment">name</span>: The name of the constant.</li>
+            <li><span class="code-segment">character</span>: The represented character.</li>
+          </ul>
+
+          <div class="code-container">
+<pre><code><span class="keyword">define</span> <span class="constant">blank</span> <span class="character">' '</span>
+<span class="keyword">define</span> <span class="constant">seperator</span> <span class="character">'$'</span>
+              
+<span class="keyword">state</span> <span class="state-id">q2</span> <span class="default">{</span>
+    <span class="constant">blank</span> <span class="operator">/</span> <span class="constant">seperator</span><span class="default">,</span> <span class="keyword">R</span> <span class="operator">-&gt;</span> <span class="state-id">q3</span>
+<span class="default">}</span></code></pre>
+            <button>Copy</button>
+          </div>
+
+          <p>This is the equivalent of writing the following code:</p>
+
+          <div class="code-container">
+<pre><code><span class="keyword">state</span> <span class="state-id">q2</span> <span class="default">{</span>
+    <span class="character">' '</span> <span class="operator">/</span> <span class="character">'$'</span><span class="default">,</span> <span class="keyword">R</span> <span class="operator">-&gt;</span> <span class="state-id">q3</span>
+<span class="default">}</span></code></pre>
+            <button>Copy</button>
+          </div>
+
+          <p>Comments are indicated using the <span class="code-segment">#</span> symbol. Comments are enclosed by <span class="code-segment">#</span> symbols at both the beginning and the end of the comment text.</p>
+
+          <div class="code-container">
+<pre><code><span class="comment"># This is a comment #</span></code></pre>
+            <button>Copy</button>
+          </div>
+
+          <p>The language also supports multiline comments:</p>
+
+          <div class="code-container">
+<pre><code><span class="comment">#
+the following state works as such:
+everytime '0' is countered replace it with '1' and move the head to the left.
+if '1' is encountered move the head to the left and switch to state q4
+#</span>
+              
+<span class="keyword">state</span> <span class="state-id">q3</span> <span class="default">{</span>
+    <span class="character">'0'</span> <span class="operator">/</span> <span class="character">'1'</span><span class="default">,</span> <span class="keyword">L</span> <span class="operator">-&gt;</span> <span class="keyword">self</span>
+    <span class="character">'1'</span> <span class="operator">/</span> <span class="character">'1'</span><span class="default">,</span> <span class="keyword">L</span> <span class="operator">-&gt;</span> <span class="state-id">q4</span>
+<span class="default">}</span></code></pre>
+            <button>Copy</button>
+          </div>
+
+          <p>Here is a script of a turing machine that adds one to a number represented in binary:</p>
+
+          <div class="code-container">
+<pre><code><span class="comment"># constants #</span>
+<span class="keyword">define</span> <span class="constant">blank</span> <span class="character">' '</span>
+
+<span class="comment"># start state #</span>
+<span class="keyword">initial</span> <span class="keyword">state</span> <span class="state-id">right</span> <span class="default">{</span>
+    <span class="comment"># move right and scan symbols #</span>
+    <span class="character">'1'</span> <span class="operator">/</span> <span class="character">'1'</span><span class="default">,</span> <span class="keyword">R</span> <span class="operator">-&gt;</span> <span class="keyword">self</span>
+    <span class="character">'0'</span> <span class="operator">/</span> <span class="character">'0'</span><span class="default">,</span> <span class="keyword">R</span> <span class="operator">-&gt;</span> <span class="keyword">self</span>
+    <span class="constant">blank</span> <span class="operator">/</span> <span class="constant">blank</span><span class="default">,</span> <span class="keyword">L</span> <span class="operator">-&gt;</span> <span class="state-id">carry</span>
+<span class="default">}</span>
+
+<span class="comment"># carry state #</span>
+<span class="keyword">state</span> <span class="state-id">carry</span> <span class="default">{</span>
+    <span class="character">'1'</span> <span class="operator">/</span> <span class="character">'0'</span><span class="default">,</span> <span class="keyword">L</span> <span class="operator">-&gt;</span> <span class="keyword">self</span>
+    <span class="character">'0'</span> <span class="operator">/</span> <span class="character">'1'</span><span class="default">,</span> <span class="keyword">L</span> <span class="operator">-&gt;</span> <span class="state-id">done</span>
+    <span class="constant">blank</span> <span class="operator">/</span> <span class="character">'1'</span><span class="default">,</span> <span class="keyword">L</span> <span class="operator">-&gt;</span> <span class="state-id">done</span>
+<span class="default">}</span>
+
+<span class="comment"># done state #</span>
+<span class="keyword">state</span> <span class="state-id">done</span> <span class="default">{</span>
+    <span class="comment"># halt state #</span>
+<span class="default">}</span></code></pre>
+            <button>Copy</button>
+          </div>
+          
+          <p>Notes</p>
+
+          <ul>
+            <li>The language is not whitespace sensitive.</li>
+            <li>State names and constant names can only start with an alphabetical letter or underscore. For the rest of the name they can also contain numbers.</li>
+            <li>Escape sequences are not supported for character expressions.</li>
+          </ul>
+        </div>
+      </section>
+      <div class="resizer"></div>
+      <div class="vertical-section-container" style="flex: 2">
+        <div class="horizontal-section-container" style="flex: 3">
+          <section class="card">
+            <div class="card-options">
+              <button id="compile-button" class="special">Compile Code</button>
+              <div class="spacer"></div>
+              <div class="dropdown">
+                <select id="theme-selection">
+                  <option selected value="one-monokai">One Monokai</option>
+                  <option value="monokai">Monokai</option>
+                  <option value="one-dark">One Dark</option>
+                  <option value="github">GitHub</option>
+                  <option value="ayu-mirage">Ayu Mirage</option>
+                </select>
+                <span class="dropdown-arrow">&#x25BC;</span>
+              </div>
+              <button id="zoom-in-button" class="svg-button" title="Zoom In">
+                <img src="res/icons/zoom-in.svg">
+              </button>
+              <button id="zoom-out-button" class="svg-button" title="Zoom Out">
+                <img src="res/icons/zoom-out.svg">
+              </button>
+            </div>
+            <div id="editor" class="one-monokai">
+              <div id="line-numbers"></div>
+              <div id="code-container">
+                <div id="backdrop" contenteditable="false"></div>
+                <textarea id="code" contenteditable spellcheck="false" aria-autocomplete="none"></textarea>
+                <div id="preview"></div>
+              </div>
+            </div>
+          </section>
+          <div class="resizer"></div>
+          <section class="card">
+            <div class="card-options">
+              <button id="clear-console-button" class="special">Clear Console</button>
+            </div>
+            <div class="controls">
+              <div class="output">
+                <div id="console"></div>
+              </div>
+            </div>
+          </section>
+        </div>
         <div class="resizer"></div>
         <section class="card">
           <div class="card-options">
-            <button id="clear-console-button" class="special">Clear Console</button>
+            <button id="step-button" class="svg-button" title="Step" disabled>
+              <img src="res/icons/step.svg">
+            </button>
+            <button id="run-or-pause-button" class="svg-button" title="Run" disabled>
+              <img src="res/icons/play.svg">
+            </button>
+            <button id="reset-button" class="svg-button" title="Reset" disabled>
+              <img src="res/icons/reset.svg">
+            </button>
+            <input id="tape-input" type="text" placeholder="Tape input here...">
             <div class="spacer"></div>
-            <a href="https://github.com/razfrumkin/turing-machine-simulator" class="svg-button" title="This Repository" target="_blank">
-              <img src="res/icons/github.svg">
-            </a>
+            <button id="copy-tape-button" class="special">Copy To Clipboard</button>
           </div>
-          <div class="controls">
-            <div class="output">
-              <div id="console"></div>
+          <div class="machine">
+            <div id="tape-container" class="tape">
+              <div id="tape-cells" class="cells"></div>
+              <div id="tape-pointer" class="pointer"></div>
             </div>
           </div>
         </section>
       </div>
-      <div class="resizer"></div>
-      <section class="card">
-        <div class="card-options">
-          <button id="step-button" class="svg-button" title="Step" disabled>
-            <img src="res/icons/step.svg">
-          </button>
-          <button id="run-or-pause-button" class="svg-button" title="Run" disabled>
-            <img src="res/icons/play.svg">
-          </button>
-          <button id="reset-button" class="svg-button" title="Reset" disabled>
-            <img src="res/icons/reset.svg">
-          </button>
-          <input id="tape-input" type="text" placeholder="Tape input here...">
-          <div class="spacer"></div>
-          <button id="copy-tape-button" class="special">Copy To Clipboard</button>
-        </div>
-        <div class="machine">
-          <div id="tape-container" class="tape">
-            <div id="tape-cells" class="cells"></div>
-            <div id="tape-pointer" class="pointer"></div>
-          </div>
-        </div>
-      </section>
     </div>
   </div>
 </body>

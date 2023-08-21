@@ -103,6 +103,7 @@
     -moz-appearance: none;
     outline: none;
     border: none;
+    border-radius: 0px;
     color: white;
     height: 100%;
     cursor: pointer;

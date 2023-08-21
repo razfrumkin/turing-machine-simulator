@@ -129,9 +129,9 @@ Comments are indicated using the `#` symbol. Comments are enclosed by `#` symbol
 The language also supports multiline comments:
 ```
 #
-The following state works as such:
-Everytime '0' is countered replace it with '1' and move the head left.
-If '1' is encountered move the head left and switch to state q4
+the following state works as such:
+everytime '0' is countered replace it with '1' and move the head to the left.
+if '1' is encountered move the head to the left and switch to state q4
 #
 
 state q3 {
@@ -144,27 +144,27 @@ state q3 {
 
 Here is a script of a turing machine that adds one to a number represented in binary:
 ```
-# Define constants #
+# define constants #
 define blank ' '
 
-# Start state #
+# start state #
 initial state right {
-    # Move right and scan symbols #
+    # move right and scan symbols #
     '1' / '1', R -> self
     '0' / '0', R -> self
     blank / blank, L -> carry
 }
 
-# Carry state #
+# carry state #
 state carry {
     '1' / '0', L -> self
     '0' / '1', L -> done
     blank / '1', L -> done
 }
 
-# Done state #
+# done state #
 state done {
-    # Halt state #
+    # halt state #
 }
 ```
 
@@ -172,4 +172,4 @@ state done {
 
 - The language is not whitespace sensitive.
 - State names and constant names can only start with an alphabetical letter or underscore. For the rest of the name they can also contain numbers.
-- Escape sequences are not supported for character expression.
+- Escape sequences are not supported for character expressions.

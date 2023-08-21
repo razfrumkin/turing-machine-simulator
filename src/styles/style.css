@@ -55,15 +55,15 @@ body {
   min-width: var(--minimum-section-dimension);
 }
 
-.vertical-section-container section {
-  min-height: var(--minimum-section-dimension);
-}
-
 .vertical-section-container {
   display: flex;
   flex-direction: column;
   overflow: hidden;
   flex: 1;
+}
+
+.vertical-section-container section {
+  min-height: var(--minimum-section-dimension);
 }
 
 .resizer {

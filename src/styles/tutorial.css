@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+:root {
+    --markup-font: 'Inter';
+
+    --markup-foreground-color: rgb(200, 200, 200);
+    --markup-header-foreground-color: white;
+
+    --code-block-border-radius: 10px;
+}
+
+#tutorial {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    color: var(--markup-foreground-color);
+    background-color: var(--text-editor-background-color);
+    box-sizing: border-box;
+    overflow: auto;
+    font-family: var(--markup-font);
+    font-weight: 300;
+    padding: 15px;
+}
+
+#tutorial h2 {
+    font-size: 34px;
+    color: var(--markup-header-foreground-color);
+}
+
+#tutorial h3 {
+    font-size: 30px;
+    color: var(--markup-header-foreground-color);
+}
+
+#tutorial p {
+    line-height: 1.5;
+    font-size: 26px;
+}
+
+#tutorial ul {
+    line-height: 2.0;
+    font-size: 26px;
+}
+
+#tutorial .code-segment {
+    background-color: var(--theme-secondary-darker-color);
+    padding: 5px;
+    font-family: 'Menlo';
+    color: white;
+}
+
+#tutorial pre {
+    background-color: var(--theme-secondary-darker-color);
+    padding: 10px;
+    overflow: auto;
+    line-height: 1.5;
+    margin: 0;
+    border-radius: var(--code-block-border-radius);
+}
+
+#tutorial code {
+    font-size: 22px;
+    font-family: 'Menlo';
+}
+
+#tutorial .code-container {
+    position: relative;
+}
+
+#tutorial .code-container button {
+    font-weight: 500;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    background-color: var(--theme-secondary-lighter-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    padding: 10px 20px;
+    border-radius: var(--code-block-border-radius) 0 var(--code-block-border-radius) 0;
+}
+
+#tutorial .code-container button:hover {
+    background-color: var(--theme-secondary-color);
+}
