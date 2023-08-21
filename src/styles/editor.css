@@ -1,5 +1,6 @@
 :root {
     --text-editor-background-color: var(--theme-color);
+    --text-editor-selection-color: rgb(200, 200, 225, 0.2);
 }
 
 #editor {
@@ -70,6 +71,10 @@
     background-color: transparent;
     color: transparent;
     white-space: pre;
+}
+
+#code::selection {
+    background-color: var(--text-editor-selection-color);
 }
 
 #preview {
