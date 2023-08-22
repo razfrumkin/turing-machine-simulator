@@ -43,6 +43,7 @@ export enum LexerResult {
     IllegalCharacter
 }
 
+// this class is used to map an index in a string to its corresponding line and column
 export class EditorMap {
     private lines$: number[]
   

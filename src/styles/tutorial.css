@@ -20,26 +20,19 @@
     font-family: var(--markup-font);
     font-weight: 300;
     padding: 15px;
-}
-
-#tutorial h2 {
-    font-size: 34px;
-    color: var(--markup-header-foreground-color);
-}
-
-#tutorial h3 {
-    font-size: 30px;
-    color: var(--markup-header-foreground-color);
+    gap: 25px;
 }
 
 #tutorial p {
     line-height: 1.5;
     font-size: 26px;
+    margin: 0;
 }
 
 #tutorial ul {
     line-height: 2.0;
     font-size: 26px;
+    margin: 0;
 }
 
 #tutorial .code-segment {

@@ -31,8 +31,8 @@ document.addEventListener('mousemove', event => {
     const containerRectangle = parent.getBoundingClientRect()
     const containerWidth = containerRectangle.width
     const containerHeight = containerRectangle.height
-    const mouseX = event.clientX
-    const mouseY = event.clientY
+    const x = event.clientX
+    const y = event.clientY
 
     const left = currentResizer.previousElementSibling as HTMLElement
     const right = currentResizer.nextElementSibling as HTMLElement
@@ -41,13 +41,13 @@ document.addEventListener('mousemove', event => {
     let rightFlexBasis = 0
 
     if (isHorizontal(parent)) {
-        const leftWidth = mouseX - containerRectangle.left
+        const leftWidth = x - containerRectangle.left
         const rightWidth = containerWidth - leftWidth
 
         leftFlexBasis = leftWidth
         rightFlexBasis = rightWidth
     } else {
-        const leftHeight = mouseY - containerRectangle.top
+        const leftHeight = y - containerRectangle.top
         const rightHeight = containerHeight - leftHeight
 
         leftFlexBasis = leftHeight
@@ -58,6 +58,7 @@ document.addEventListener('mousemove', event => {
     right.style.flexBasis = `${rightFlexBasis}px`
 })
 
+// checks if a flex element's direction is horizontal
 function isHorizontal(element: HTMLElement): boolean {
     const computedStyles = window.getComputedStyle(element)
     const flexDirection = computedStyles.getPropertyValue('flex-direction')

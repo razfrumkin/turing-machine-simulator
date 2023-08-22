@@ -1,5 +1,6 @@
-import { TMA, TMAState, TMADirection } from './turing-machine'
+import { Automata, AutomataState, AutomataDirection } from './turing-machine'
 import { LexerResult, ParserResult, ParserResultType } from './diagnostics'
+import { isAlphabetic, isAlphabeticDigit } from './utilities'
 
 export enum TokenType {
     Comment,
@@ -58,14 +59,6 @@ export type SymbolTable = { [key: string]: Symbol }
 
 function errorSymbol(): Symbol {
     return { type: SymbolType.Error, identifier: '', data: { type: SymbolDataType.None, value: '' } }
-}
-
-export function isAlphabetic(character: string): boolean {
-    return (character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z')
-}
-
-export function isAlphabeticInteger(character: string): boolean {
-    return isAlphabetic(character) || (character >= '0' && character <= '9')
 }
 
 export class Lexer {
@@ -127,7 +120,7 @@ export class Lexer {
         const start = this.position
 
         let value = ''
-        while (this.position < this.code.length && (this.current === '_' || isAlphabeticInteger(this.current))) {
+        while (this.position < this.code.length && (this.current === '_' || isAlphabeticDigit(this.current))) {
             value += this.current
             this.advance()
         }
@@ -254,7 +247,7 @@ export class Parser {
         return { type: ParserResultType.ExpectedConstantValue, position: this.current.position, value: '' }
     }
 
-    parseCase(stateId: string, state: TMAState, symbols: SymbolTable): ParserResult {
+    parseCase(stateId: string, state: AutomataState, symbols: SymbolTable): ParserResult {
         let caseCharacter: string
         if (this.current.type === TokenType.Character) caseCharacter = this.current.value
         else if (this.current.type === TokenType.Identifier) {
@@ -285,10 +278,10 @@ export class Parser {
         this.advance()
 
         const direction =
-            this.current.type as TokenType === TokenType.Left ? TMADirection.Left :
-            this.current.type as TokenType === TokenType.Right ? TMADirection.Right :
-            TMADirection.Error
-        if (direction === TMADirection.Error) return { type: ParserResultType.ExpectedDirection, position: this.current.position, value: '' }
+            this.current.type as TokenType === TokenType.Left ? AutomataDirection.Left :
+            this.current.type as TokenType === TokenType.Right ? AutomataDirection.Right :
+            AutomataDirection.Error
+        if (direction === AutomataDirection.Error) return { type: ParserResultType.ExpectedDirection, position: this.current.position, value: '' }
         this.advance()
 
         if (this.current.type as TokenType !== TokenType.Arrow) return { type: ParserResultType.ExpectedArrowBetweenDirectionAndTargetState, position: this.current.position, value: '' }
@@ -314,8 +307,8 @@ export class Parser {
         return { type: ParserResultType.StateIdDoesNotExist, position: this.current.position, value: this.current.value }
     }
 
-    parseState(automata: TMA, symbols: SymbolTable): ParserResult[] {
-        let state: TMAState = {}
+    parseState(automata: Automata, symbols: SymbolTable): ParserResult[] {
+        let state: AutomataState = {}
 
         let isInitialState = false
 
@@ -350,7 +343,7 @@ export class Parser {
         return output
     }
 
-    parseTopLevelDefinition(automata: TMA, symbols: SymbolTable): ParserResult[] {
+    parseTopLevelDefinition(automata: Automata, symbols: SymbolTable): ParserResult[] {
         if (this.current.type === TokenType.Define) {
             this.advance()
 
@@ -362,8 +355,8 @@ export class Parser {
         return this.parseState(automata, symbols)
     }
 
-    parse(): { automata: TMA, symbols: SymbolTable, output: ParserResult[][] } {
-        let automata: TMA = { initialStateId: '', states: {} }
+    parse(): { automata: Automata, symbols: SymbolTable, output: ParserResult[][] } {
+        let automata: Automata = { initialStateId: '', states: {} }
 
         if (this.tokens.length === 0) return { automata: automata, symbols: {}, output: [[{ type: ParserResultType.NoInitialStateExists, position: -1, value: '' }]] }
 

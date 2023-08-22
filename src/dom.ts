@@ -1,7 +1,8 @@
 import { Lexer, Parser, TokenType } from './compiler'
 import { createCharacterSpan, createIdentifierSpan, EditorMap, formatLexer, formatParser } from './diagnostics'
 import { clearOutput, logOutput } from './console'
-import { TMA, TuringMachine, Tape, TMADirection, tapeString, BLANK_CELLS_PER_SIDE } from './turing-machine'
+import { Automata, TuringMachine, Tape, AutomataDirection, tapeString, BLANK_CELLS_PER_SIDE } from './turing-machine'
+import { setupEditor } from './editor'
 
 const code = document.getElementById('code') as HTMLTextAreaElement
 const compileButton = document.getElementById('compile-button') as HTMLButtonElement
@@ -16,12 +17,21 @@ const copyTapeButton = document.getElementById('copy-tape-button') as HTMLButton
 const tapeCellsElement = document.getElementById('tape-cells') as HTMLDivElement
 
 let machine: TuringMachine | null = null
-let automata: TMA
+let automata: Automata
 
 const MAX_OUTPUTS: number = 100
 
 const REPLACE_MILLISECONDS: number = 250
 const MOVE_MILLISECONDS: number = 750
+
+export function setup() {
+    prepareTapeElement('')
+    setupEditor()
+    
+    const span = document.createElement('span')
+    span.textContent = 'Welcome to Turing Machine Simulator.'
+    logOutput(span, false)
+}
 
 compileButton.addEventListener('click', () => {
     if (!compile()) return
@@ -30,6 +40,7 @@ compileButton.addEventListener('click', () => {
     runOrPauseButton.disabled = false
     resetButton.disabled = false
 
+    // if compilation is successful, set up the tape
     const tapeString = tapeInput.value.trim()
     machine = new TuringMachine(automata, tapeString)
     onMachineSwitchedState(automata.initialStateId)
@@ -177,7 +188,6 @@ function pushCellElement() {
 
 function movePointerToCell(index: number, animate: boolean = true) {
     const cell = tapeCellsElement.children[index]
-    
     const length = cell.getBoundingClientRect().width
 
     tapeCellsElement.style.transition = animate ? 'var(--cells-transition)' : 'none'
@@ -201,11 +211,11 @@ async function onMachineReplaced(tape: Tape, caseCharacter: string, replacement:
     logOutput(span)
 }
 
-async function onMachineMoved(tape: Tape, direction: TMADirection) {
+async function onMachineMoved(tape: Tape, direction: AutomataDirection) {
     await timeout(MOVE_MILLISECONDS)
     if (!tape.isMachineRunning) return
 
-    if (direction === TMADirection.Left) {
+    if (direction === AutomataDirection.Left) {
         if (tapeCellsElement.children.length - 1 < tape.cells.length) {
             insertCellElement()
             movePointerToCell(tape.pointer + 1, false)
@@ -220,7 +230,7 @@ async function onMachineMoved(tape: Tape, direction: TMADirection) {
 
     const span = document.createElement('span')
     span.appendChild(document.createTextNode('Moving to the '))
-    span.appendChild(createIdentifierSpan(direction === TMADirection.Left ? 'left' : 'right'))
+    span.appendChild(createIdentifierSpan(direction === AutomataDirection.Left ? 'left' : 'right'))
     span.appendChild(document.createTextNode(' direction\n'))
     logOutput(span)
 }
@@ -247,10 +257,4 @@ function onMachineFinished(tape: Tape) {
 
 function timeout(milliseconds: number): Promise<unknown> {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
-}
-
-window.onload = () => {
-    const span = document.createElement('span')
-    span.textContent = 'Welcome to Turing Machine Simulator.'
-    logOutput(span, false)
 }

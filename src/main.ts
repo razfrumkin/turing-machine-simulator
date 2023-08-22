@@ -1,3 +1,3 @@
-import { prepareTapeElement } from './dom';
+import { setup } from './dom';
 
-window.addEventListener('load', () => prepareTapeElement(''))
+window.addEventListener('load', setup)

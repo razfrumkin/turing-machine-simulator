@@ -82,7 +82,7 @@
     display: none;
     border: 1px solid #ccc;
     padding: 10px;
-    background-color: rgb(46, 46, 52);
+    background-color: var(--theme-secondary-darker-color);
     border: none;
     left: 0;
     top: 0;

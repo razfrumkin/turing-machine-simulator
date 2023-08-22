@@ -19,47 +19,47 @@
 }
 
 .tape {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
 }
 
 .cells {
-  display: flex;
-  flex-direction: row;
-  border-radius: 3px;
-  border: var(--cell-thickness) solid var(--cell-color);
-  height: var(--cell-length);
-  position: absolute;
-  margin-left: calc(calc(var(--cell-length) / -2) - var(--cell-thickness));
-  transition: var(--cells-transition);
+    display: flex;
+    flex-direction: row;
+    border-radius: 3px;
+    border: var(--cell-thickness) solid var(--cell-color);
+    height: var(--cell-length);
+    position: absolute;
+    margin-left: calc(calc(var(--cell-length) / -2) - var(--cell-thickness));
+    transition: var(--cells-transition);
 }
 
 .cell {
-  font-family: 'Menlo';
-  color: var(--cell-color);
-  font-size: 32px;
-  width: var(--cell-length);
-  height: var(--cell-length);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-right: solid var(--cell-color) var(--cell-thickness);
-  box-sizing: border-box;
+    font-family: 'Menlo';
+    color: var(--cell-color);
+    font-size: 32px;
+    width: var(--cell-length);
+    height: var(--cell-length);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: solid var(--cell-color) var(--cell-thickness);
+    box-sizing: border-box;
 }
 
 .cell:last-child {
-  border-right: none; /* Remove border on the last item */
+    border-right: none; /* Remove border on the last item */
 }
 
 .pointer {
-  width: var(--pointer-length);
-  height: var(--pointer-length);
-  background-color: transparent;
-  position: absolute;
-  border: 5px solid #a5be00;
-  border-radius: 10px;
-  margin-left: calc(var(--pointer-length) / -2);
-  box-sizing: border-box;
+    width: var(--pointer-length);
+    height: var(--pointer-length);
+    background-color: transparent;
+    position: absolute;
+    border: 5px solid #a5be00;
+    border-radius: 10px;
+    margin-left: calc(var(--pointer-length) / -2);
+    box-sizing: border-box;
 }

@@ -1,6 +1,7 @@
 const tutorial = document.getElementById('tutorial') as HTMLDivElement
 const codeContainers = document.getElementsByClassName('code-container') as HTMLCollectionOf<HTMLDivElement>
 
+// for every code-container div, set the functionallity of its copy button
 for (let index = 0; index < codeContainers.length; index += 1) {
     const container = codeContainers[index]
     const code = container.children[0] as HTMLPreElement
@@ -11,6 +12,7 @@ for (let index = 0; index < codeContainers.length; index += 1) {
     })
 }
 
-export function setTutorialStyle(style: string) {
+// similar to the text editor, set the tutorial section theme
+export function setTutorialTheme(style: string) {
     tutorial.className = style
 }

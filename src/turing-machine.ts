@@ -1,3 +1,6 @@
+import { setCharacterAt } from './utilities'
+
+// how many blank cells to render before and after non blank cells to give the illusion of an infinite tape
 export const BLANK_CELLS_PER_SIDE: number = 20
 const BLANK_SEQUENCE: string = ' '.repeat(BLANK_CELLS_PER_SIDE)
 
@@ -5,22 +8,20 @@ export function tapeString(word: string): string {
     return `${BLANK_SEQUENCE}${word}${BLANK_SEQUENCE}`
 }
 
-// TMA stands for turing machine automata
-
-export type TMA = {
+export type Automata = {
     initialStateId: string
-    states: { [key: string]: TMAState }
+    states: { [key: string]: AutomataState }
 }
 
-export type TMAState = { [key: string]: TMACase }
+export type AutomataState = { [key: string]: AutomataCase }
 
-export type TMACase = {
+export type AutomataCase = {
     replacement: string
-    direction: TMADirection
+    direction: AutomataDirection
     targetStateId: string
 }
 
-export enum TMADirection {
+export enum AutomataDirection {
     Left,
     Right,
 
@@ -28,13 +29,13 @@ export enum TMADirection {
 }
 
 export class TuringMachine {
-    private automata$: TMA
+    private automata$: Automata
     private tape$: Tape
     private currentStateId$: string
     private isRunning$: boolean
     private isPaused$: boolean
 
-    constructor(automata: TMA, tape: string) {
+    constructor(automata: Automata, tape: string) {
         this.automata$ = automata
         this.tape$ = new Tape(this, tape)
         this.currentStateId$ = automata.initialStateId
@@ -48,7 +49,7 @@ export class TuringMachine {
         this.currentStateId$ = this.automata$.initialStateId
     }
 
-    private async executeState(stateId: string, onReplaced: (tape: Tape, caseCharacter: string, replacement: string) => void, onMoved: (tape: Tape, direction: TMADirection) => void, onSwitchedState: (stateId: string) => void) {
+    private async executeState(stateId: string, onReplaced: (tape: Tape, caseCharacter: string, replacement: string) => void, onMoved: (tape: Tape, direction: AutomataDirection) => void, onSwitchedState: (stateId: string) => void) {
         const state = this.automata$.states[stateId]
         for (const caseCharacter in state) {
             if (this.tape$.current === caseCharacter) {
@@ -67,7 +68,7 @@ export class TuringMachine {
         this.isRunning$ = false
     }
 
-    async run(onReplaced: (tape: Tape, caseCharacter: string, replacement: string) => void, onMoved: (tape: Tape, direction: TMADirection) => void, onSwitchedState: (stateId: string) => void, onFinished: (tape: Tape) => void) {
+    async run(onReplaced: (tape: Tape, caseCharacter: string, replacement: string) => void, onMoved: (tape: Tape, direction: AutomataDirection) => void, onSwitchedState: (stateId: string) => void, onFinished: (tape: Tape) => void) {
         this.isRunning$ = true
         this.isPaused$ = false
 
@@ -76,7 +77,7 @@ export class TuringMachine {
         }
     }
 
-    async step(onReplaced: (tape: Tape, caseCharacter: string, replacement: string) => void, onMoved: (tape: Tape, direction: TMADirection) => void, onSwitchedState: (stateId: string) => void, onFinished: (tape: Tape) => void) {
+    async step(onReplaced: (tape: Tape, caseCharacter: string, replacement: string) => void, onMoved: (tape: Tape, direction: AutomataDirection) => void, onSwitchedState: (stateId: string) => void, onFinished: (tape: Tape) => void) {
         this.isRunning$ = true
         this.isPaused$ = false
 
@@ -118,16 +119,16 @@ export class Tape {
     }
 
     moveLeft() {
+        // to maintain the infinite tape illusion, add blank cells
         if (this.pointer$ < BLANK_CELLS_PER_SIDE) this.cells$ = ' ' + this.cells$
         else this.pointer$ -= 1
     }
 
     moveRight() {
+         // to maintain the infinite tape illusion, add blank cells
         const offset = this.cells$.length - this.pointer$
         this.pointer$ += 1
-        if (offset <= BLANK_CELLS_PER_SIDE) {
-            this.cells$ += ' '
-        }
+        if (offset <= BLANK_CELLS_PER_SIDE) this.cells$ += ' '
     }
 
     get current(): string {
@@ -138,12 +139,12 @@ export class Tape {
         this.cells$ = setCharacterAt(this.cells$, this.pointer$, character)
     }
 
-    async executeCase(turingCase: TMACase, onReplaced: (tape: Tape, caseCharacter: string, replacement: string) => void, onMoved: (tape: Tape, direction: TMADirection) => void) {
+    async executeCase(turingCase: AutomataCase, onReplaced: (tape: Tape, caseCharacter: string, replacement: string) => void, onMoved: (tape: Tape, direction: AutomataDirection) => void) {
         const caseCharacter = this.current
         this.current = turingCase.replacement
         await onReplaced(this, caseCharacter, this.current)
 
-        turingCase.direction == TMADirection.Left ? this.moveLeft() : this.moveRight()
+        turingCase.direction == AutomataDirection.Left ? this.moveLeft() : this.moveRight()
         await onMoved(this, turingCase.direction)
     }
 
@@ -158,9 +159,4 @@ export class Tape {
     get pointer(): number {
         return this.pointer$
     }
-}
-
-// because you cannot do myString[index] = value
-function setCharacterAt(value: string, index: number, character: string): string {
-    return value.substring(0, index) + character + value.substring(index + 1)
 }

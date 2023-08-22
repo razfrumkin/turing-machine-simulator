@@ -1,5 +1,5 @@
 import { Lexer, Parser, SymbolDataType, SymbolTable, SymbolType, Token, TokenType } from './compiler'
-import { setTutorialStyle } from './tutorial'
+import { setTutorialTheme } from './tutorial'
 
 const editor = document.getElementById('editor') as HTMLDivElement
 const themeSelection = document.getElementById('theme-selection') as HTMLSelectElement
@@ -16,9 +16,12 @@ const MINIMUM_FONT_SIZE: number = 12
 const MAXIMUM_FONT_SIZE: number = 36
 const DEFAULT_FONT_SIZE: number = 22
 let fontSize: number = DEFAULT_FONT_SIZE
-updateEditorFontSize()
-syncScroll()
-updateEditor()
+
+export function setupEditor() {
+    updateEditorFontSize()
+    syncScroll()
+    updateEditor()
+}
 
 const matchings: { [key: string]: string } = {
     '{': '}',
@@ -28,7 +31,7 @@ const matchings: { [key: string]: string } = {
 themeSelection.addEventListener('change', () => {
     const style = themeSelection.value
     editor.className = style
-    setTutorialStyle(style)
+    setTutorialTheme(style)
 })
 
 zoomInButton.addEventListener('click', () => {
@@ -128,6 +131,7 @@ function highlight(tokens: Token[], symbols: SymbolTable) {
     const after = code.value.substring(currentPosition)
     backdrop.appendChild(document.createTextNode(after))
 
+    // handle the mouse move so when a span is hovered and it is a 'constant' span it will show a preview of the symbol
     code.onmousemove = event => {
         const parentRectangle = (event.target as HTMLElement).getBoundingClientRect()
         const x = event.clientX
@@ -144,22 +148,20 @@ function highlight(tokens: Token[], symbols: SymbolTable) {
                 preview.appendChild(hoverable.highlight.hovered!)
                 const previewX = boundary.left - parentRectangle.left;
                 let previewY = boundary.top - boundary.height * 2 - parentRectangle.top;
-                if (previewY <= parentRectangle.top) previewY = boundary.bottom - parentRectangle.top
+                if (previewY <= parentRectangle.top) previewY = boundary.bottom - parentRectangle.top // if the span is too high relative to the view, show the preview under the span
 
                 preview.style.transform = `translateX(${previewX}px) translateY(${previewY}px)`
                 preview.style.display = 'inline-block'
-                preview.classList.add('active')
                 found = true
                 return
             }
         })
 
-        if (!found) {
-            preview.style.display = 'none'
-        }
+        if (!found) preview.style.display = 'none'
     }
 }
 
+// based on the token. return highlight information
 function tokenHighlight(token: Token, symbols: SymbolTable): Highlight {
     switch (token.type) {
         case TokenType.Comment:
@@ -168,6 +170,7 @@ function tokenHighlight(token: Token, symbols: SymbolTable): Highlight {
             return { start: token.position - 1, end: token.position + token.length + 1, styleClass: 'character', hovered: null }
         case TokenType.Identifier:
             if (token.value in symbols) {
+                // if the symbol is a constant, generate a preview span
                 if (symbols[token.value].type === SymbolType.State) return { start: token.position, end: token.position + token.length, styleClass: 'state-id', hovered: null }
 
                 const span = document.createElement('span')
@@ -236,6 +239,7 @@ function handleKeyPress(event: KeyboardEvent) {
         const next = code.selectionStart - 1
         const previous = code.selectionStart
 
+        // if there are matching curly brackets surrounding the selection, insert a tab and a newline in addition to the initial newline
         if (code.value.charAt(next) === '{' && code.value.charAt(previous) === '}') {
             event.preventDefault()
 
@@ -272,5 +276,3 @@ function syncScroll() {
     backdrop.scrollLeft = code.scrollLeft
     lineNumbers.scrollTop = code.scrollTop
 }
-
-export {}
