@@ -2,6 +2,8 @@
 
 A website that allows the simulation of a Turing machine. The website comes with a text editor in which the user writes a script for the behavior of the turing machine. The turing machine is later simulated via a tape which is visualized in the DOM.
 
+![](https://github.com/razfrumkin/turing-machine-simulator/blob/main/screenshots/website.jpeg?raw=true)
+
 ## Getting Started
 
 This guide will walk you through the steps to set up and run the website using Vite. By following these steps, you'll be able to to run the simulator locally on your machine.
