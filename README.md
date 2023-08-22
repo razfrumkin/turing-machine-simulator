@@ -63,7 +63,7 @@ This language is designed to define the behavior of a Turing machine. Below, you
 
 #### States
 
-The script is composed of of various states, each of which defines the behavior of the Turing machine when it encounters specific symbols on the tape.
+The script is composed of various states, each of which defines the behavior of the Turing machine when it encounters specific symbols on the tape.
 ```
 state <state-id> {
     <case> / <replacement>, <direction> -> <target-state-id>
