@@ -1,6 +1,6 @@
 :root {
     --text-editor-background-color: var(--theme-color);
-    --text-editor-selection-color: rgb(200, 200, 225, 0.2);
+    --text-editor-selection-color: var(--theme-selection-color);
 }
 
 #editor {
