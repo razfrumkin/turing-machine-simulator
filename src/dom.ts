@@ -27,7 +27,7 @@ const MOVE_MILLISECONDS: number = 750
 export function setup() {
     prepareTapeElement('')
     setupEditor()
-    
+
     const span = document.createElement('span')
     span.textContent = 'Welcome to Turing Machine Simulator.'
     logOutput(span, false)
@@ -150,7 +150,7 @@ tapeInput.addEventListener('input', () => {
 })
 
 copyTapeButton.addEventListener('click', () => {
-    navigator.clipboard.writeText(cellsString.trim())
+    navigator.clipboard.writeText(tapeCellsElement.textContent!.trim())
 })
 
 export function prepareTapeElement(value: string) {
@@ -245,14 +245,12 @@ function onMachineSwitchedState(stateId: string) {
     logOutput(span)
 }
 
-let cellsString: string = ''
 function onMachineFinished(tape: Tape) {
     tapeInput.disabled = false
     stepButton.disabled = true
     runOrPauseButton.disabled = true
     runOrPauseButtonImage.src = '../res/icons/play.svg'
     runOrPauseButton.title = 'Run'
-    cellsString = tape.cells
 }
 
 function timeout(milliseconds: number): Promise<unknown> {
