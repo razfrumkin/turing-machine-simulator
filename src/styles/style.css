@@ -87,3 +87,8 @@ body {
   background-color: var(--theme-secondary-lighter-color);
   border-radius: 5px;
 }
+
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
