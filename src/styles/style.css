@@ -10,6 +10,7 @@
     --minimum-section-dimension: 200px;
 
     --main-font: 'Ubuntu', sans-serif;
+    --coding-font: Menlo, Consolas, Monaco, Ludica Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
 }
 
 html {

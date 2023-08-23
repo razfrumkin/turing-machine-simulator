@@ -7,7 +7,7 @@
     position: relative;
     display: flex;
     flex: 1;
-    font-family: 'Menlo', monospace;
+    font-family: var(--coding-font);
     line-height: 1.5;
     overflow: hidden;
     box-sizing: border-box;

@@ -37,7 +37,7 @@
 }
 
 .cell {
-    font-family: 'Menlo';
+    font-family: var(--coding-font);
     color: var(--cell-color);
     font-size: 32px;
     width: var(--cell-length);

@@ -38,7 +38,7 @@
 #tutorial .code-segment {
     background-color: var(--theme-secondary-darker-color);
     padding: 5px;
-    font-family: 'Menlo';
+    font-family: var(--coding-font);
     color: white;
     border-radius: var(--code-block-border-radius);
 }
@@ -54,7 +54,7 @@
 
 #tutorial code {
     font-size: 22px;
-    font-family: 'Menlo';
+    font-family: var(--coding-font);
 }
 
 #tutorial .code-container {

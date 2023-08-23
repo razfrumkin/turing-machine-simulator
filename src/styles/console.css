@@ -28,7 +28,7 @@
 #console {
     margin: 0;
     flex: 1;
-    font-family: 'Menlo';
+    font-family: var(--coding-font);
     font-size: 18px;
     line-height: 1.5;
     color: var(--console-foreground-color);
